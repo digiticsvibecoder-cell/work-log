@@ -1,0 +1,1200 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>سجل الإنجازات</title>
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='3' fill='%232b3238'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' fill='none' stroke='%23ffd730' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* نفس لغة digitics.org («The Workshop»): ورق رمادي فاتح، حبر متدرّج، خطوط رمادي، أصفر للتأكيد بس، زوايا 2px. */
+:root {
+  color-scheme: light;
+  --bg: #eff0ee; --surface: #ffffff; --ink: #1d2125; --ink-2: #33393e; --ink-3: #565c61;
+  --line: #dadddf; --line-2: #b4b9bd; --accent: #ffd730; --on-accent: #1d2125;
+  --slate: #2b3238; --on-slate: #e6e9eb; --on-slate-2: #b3bbc1; --on-slate-line: rgb(255 255 255 / .18);
+  --mark: #ffe680; --hover: #e6e8e6;
+  --ok: #1f7a3d; --ok-bg: #e9f4ec; --wip: #8a5300; --wip-bg: #fbf0d6; --wait: #2c5a8c; --wait-bg: #e7eff8; --note: #50565b; --note-bg: #e6e8e7;
+  --h0: #e0e3e1; --h1: #c1c7ca; --h2: #8d959b; --h3: #555c62; --h4: #1d2125;
+  --tip-bg: #1d2125; --tip-ink: #f3f4f3; --danger: #b42318;
+  --font: 'IBM Plex Sans Arabic', 'IBM Plex Sans', 'Segoe UI', Tahoma, sans-serif;
+  --r: 2px; --ease: cubic-bezier(.2, 0, 0, 1); --t: 160ms; --tap: 44px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #15181b; --surface: #1c2024; --ink: #eceeef; --ink-2: #c9cfd3; --ink-3: #9aa3a9; --line: #2d3338; --line-2: #48515a;
+    --slate: #0e1113; --on-slate-line: rgb(255 255 255 / .12); --mark: #6b5a12; --hover: #23282d;
+    --ok: #7fd39c; --ok-bg: #15301f; --wip: #f0c46e; --wip-bg: #34280e; --wait: #9dc1ec; --wait-bg: #172637; --note: #b8c0c6; --note-bg: #262b30;
+    --h0: #252a2f; --h1: #3d464d; --h2: #67727b; --h3: #a6b0b7; --h4: #eef0f1; --tip-bg: #eceeef; --tip-ink: #15181b; --danger: #f08b80;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #15181b; --surface: #1c2024; --ink: #eceeef; --ink-2: #c9cfd3; --ink-3: #9aa3a9; --line: #2d3338; --line-2: #48515a;
+  --slate: #0e1113; --on-slate-line: rgb(255 255 255 / .12); --mark: #6b5a12; --hover: #23282d;
+  --ok: #7fd39c; --ok-bg: #15301f; --wip: #f0c46e; --wip-bg: #34280e; --wait: #9dc1ec; --wait-bg: #172637; --note: #b8c0c6; --note-bg: #262b30;
+  --h0: #252a2f; --h1: #3d464d; --h2: #67727b; --h3: #a6b0b7; --h4: #eef0f1; --tip-bg: #eceeef; --tip-ink: #15181b; --danger: #f08b80;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 1.0625rem/1.75 var(--font); letter-spacing: 0; overflow-x: hidden; }
+h1, h2, h3, h4 { line-height: 1.3; text-wrap: balance; }
+a { color: inherit; text-decoration-color: var(--line-2); text-underline-offset: .25em; }
+a:hover { text-decoration-color: currentColor; }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+code { font-family: var(--font); font-size: .9em; background: var(--h0); padding: .05em .35em; border-radius: var(--r); unicode-bidi: isolate; overflow-wrap: anywhere; }
+mark { background: var(--mark); color: inherit; border-radius: 1px; }
+[hidden] { display: none !important; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.wrap { max-width: 64rem; margin-inline: auto; padding-inline: clamp(1rem, 4vw, 2.5rem); }
+.muted { color: var(--ink-3); }
+
+/* ---------- masthead ---------- */
+.mast { background: var(--slate); color: var(--on-slate); }
+.mast .wrap { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; padding-block: clamp(1.25rem, 3.5vw, 2.25rem) clamp(1.1rem, 3vw, 1.75rem); }
+.kicker { margin: 0; color: var(--on-slate-2); font-size: .9375rem; font-weight: 500; }
+.mast h1 { margin: .1rem 0 .35rem; font-size: clamp(1.9rem, 1.3rem + 2.4vw, 3rem); font-weight: 700; line-height: 1.2; }
+.mast h1::after { content: ""; display: block; inline-size: 3rem; block-size: 4px; margin-block-start: .55rem; background: var(--accent); }
+.meta { margin: 0; color: var(--on-slate-2); font-size: .9375rem; }
+.meta b { color: var(--on-slate); font-weight: 600; }
+.mast-btns { display: flex; gap: .5rem; flex: none; }
+.icon-btn { inline-size: var(--tap); block-size: var(--tap); display: inline-grid; place-items: center; border: 1px solid var(--on-slate-line); border-radius: var(--r); background: transparent; color: var(--on-slate); transition: background var(--t) var(--ease); }
+.icon-btn:hover { background: rgb(255 255 255 / .08); }
+.icon-btn svg { inline-size: 20px; block-size: 20px; }
+
+/* ---------- tabs + toolbar ---------- */
+.tabbar { position: sticky; inset-block-start: 0; z-index: 20; background: var(--bg); border-block-end: 1px solid var(--line); }
+.tabs { display: flex; gap: .15rem; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { flex: none; min-block-size: 48px; padding-inline: .85rem; border: 0; border-block-end: 3px solid transparent; background: none; color: var(--ink-3); font-weight: 600; transition: color var(--t) var(--ease), border-color var(--t) var(--ease); }
+.tab:hover { color: var(--ink); }
+.tab[aria-selected="true"] { color: var(--ink); border-block-end-color: var(--accent); }
+.tab .c { margin-inline-start: .3rem; color: var(--ink-3); font-weight: 500; font-size: .8125rem; }
+.toolbar { padding-block: .9rem .25rem; }
+.filters { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; margin-block-end: .6rem; }
+.field { min-block-size: var(--tap); border: 1px solid var(--line-2); border-radius: var(--r); background: var(--surface); padding-inline: .75rem; font-size: 1rem; }
+.search { position: relative; flex: 1 1 13rem; min-inline-size: 11rem; }
+.search .field { inline-size: 100%; padding-inline-end: 2.5rem; }
+.search .clear { position: absolute; inset-inline-end: 0; inset-block-start: 0; inline-size: var(--tap); block-size: var(--tap); border: 0; background: none; color: var(--ink-3); display: none; }
+.search.has .clear { display: block; }
+.dates { display: none; gap: .5rem; align-items: center; }
+.dates.on { display: inline-flex; }
+.dates .field { inline-size: 10.5rem; }
+.result-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem 1rem; }
+.result { margin: 0; color: var(--ink-3); font-size: .9375rem; }
+.actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.btn { min-block-size: 40px; padding-inline: .9rem; border: 1px solid var(--line-2); border-radius: var(--r); background: var(--surface); font-weight: 600; font-size: .9375rem; display: inline-flex; align-items: center; justify-content: center; gap: .4rem; transition: border-color var(--t) var(--ease), background var(--t) var(--ease); }
+.btn:hover { border-color: var(--ink-3); }
+.btn.primary { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.btn.primary:hover { background: #ffe36b; }
+.btn svg { inline-size: 18px; block-size: 18px; }
+.linkish { border: 0; background: none; padding: 0; color: var(--ink-2); font-size: inherit; text-decoration: underline; text-decoration-color: var(--line-2); text-underline-offset: .25em; text-align: start; }
+.linkish:hover { text-decoration-color: currentColor; }
+@media (max-width: 620px) {
+  .tabs { justify-content: space-between; gap: 0; }
+  .tab { padding-inline: .4rem; font-size: .9375rem; }
+  .tab .c { display: none; }
+  .lg { display: none; } .sm { display: inline; }
+  .filters { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .filters > label > .field { inline-size: 100%; }
+  .search, .dates, #proj-wrap { grid-column: 1 / -1; }
+  .dates.on { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
+  .dates .field { inline-size: 100%; }
+  .actions { inline-size: 100%; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; }
+}
+
+/* ---------- shared bits ---------- */
+main { padding-block: .5rem 3rem; min-block-size: 50vh; }
+.st { display: inline-grid; place-items: center; inline-size: 1.25rem; block-size: 1.25rem; flex: none; }
+.st svg { inline-size: 1.15rem; block-size: 1.15rem; }
+.st.ok { color: var(--ok); } .st.wip { color: var(--wip); } .st.wait { color: var(--wait); } .st.note { color: var(--note); } .st.none { color: var(--line-2); }
+.chip { display: inline-flex; align-items: center; gap: .3rem; padding: .05rem .5rem .1rem; border-radius: var(--r); font-size: .8125rem; font-weight: 600; line-height: 1.6; max-inline-size: 100%; }
+.chip svg { inline-size: .95rem; block-size: .95rem; flex: none; }
+.chip.ok { color: var(--ok); background: var(--ok-bg); } .chip.wip { color: var(--wip); background: var(--wip-bg); }
+.chip.wait { color: var(--wait); background: var(--wait-bg); } .chip.note { color: var(--note); background: var(--note-bg); }
+.hash { font-size: .8125rem; font-weight: 500; color: var(--ink-2); text-decoration: none; border-block-end: 1px dotted var(--line-2); font-variant-numeric: tabular-nums; unicode-bidi: isolate; }
+.hash:hover { border-block-end-style: solid; border-color: var(--ink-2); }
+a.file { text-decoration: none; } a.file code { border-block-end: 1px dotted var(--line-2); }
+.chev { inline-size: 18px; block-size: 18px; flex: none; color: var(--ink-3); transition: transform var(--t) var(--ease); }
+[aria-expanded="true"] > .chev, details[open] > summary > .chev { transform: rotate(180deg); }
+.body { color: var(--ink-2); }
+.body p { margin: .25rem 0 .5rem; }
+.body ul { margin: 0; padding-inline-start: 1.15rem; list-style: disc; }
+.body ul ul { list-style: circle; }
+.sm { display: none; }
+.body li { margin-block: .3rem; }
+.body li::marker { color: var(--line-2); }
+.body ul ul { margin-block: .2rem; }
+.empty { padding: 2.5rem 0; color: var(--ink-3); }
+.empty strong { display: block; color: var(--ink); font-size: 1.125rem; margin-block-end: .35rem; }
+details.fold { margin-block: .75rem; }
+details.fold > summary { list-style: none; display: inline-flex; align-items: center; gap: .4rem; min-block-size: 36px; color: var(--ink-2); font-weight: 600; font-size: .9375rem; cursor: pointer; }
+details.fold > summary::-webkit-details-marker { display: none; }
+details.fold > summary:hover { color: var(--ink); }
+.commit-list { list-style: none; margin: .35rem 0 0; padding: 0; display: grid; gap: .3rem; font-size: .875rem; }
+.commit-list li { display: flex; flex-wrap: wrap; gap: .15rem .6rem; align-items: baseline; color: var(--ink-2); }
+.commit-list .s { min-inline-size: 0; flex: 1 1 14rem; overflow-wrap: anywhere; }
+.commit-list .x { color: var(--ink-3); font-size: .75rem; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.commit-list .x.branch { color: var(--wip); }
+.flash { animation: flash 1.6s var(--ease); }
+@keyframes flash { 0%, 30% { background: color-mix(in srgb, var(--accent) 35%, transparent); } 100% { background: transparent; } }
+
+/* ---------- items (day lists) ---------- */
+.items { list-style: none; margin: 0; padding: 0; display: grid; gap: .2rem; }
+.item-row, .item-btn { display: flex; gap: .6rem; align-items: flex-start; inline-size: 100%; padding: .3rem .4rem; margin-inline: -.4rem; border: 0; border-radius: var(--r); background: none; text-align: start; }
+.item-btn { transition: background var(--t) var(--ease); }
+.item-btn:hover { background: var(--hover); }
+.item-row .st, .item-btn .st { margin-block-start: .3rem; }
+.item-t { min-inline-size: 0; flex: 1; overflow-wrap: anywhere; }
+.item-btn .chev { margin-block-start: .4rem; }
+.item-more { margin: .25rem 0 .75rem; margin-inline-start: 1.85rem; padding: .8rem 1rem; background: var(--surface); border-radius: var(--r); }
+.mini-top { display: flex; flex-wrap: wrap; gap: .3rem .7rem; align-items: center; color: var(--ink-3); font-size: .8125rem; margin-block-end: .35rem; }
+.mini-title { font-weight: 600; margin: 0 0 .35rem; font-size: 1rem; }
+
+/* ---------- today ---------- */
+.day-switch { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: .75rem; margin-block: .5rem .25rem; }
+.day-title { text-align: center; }
+.day-title h2 { margin: 0; font-size: clamp(1.6rem, 1.2rem + 1.5vw, 2.25rem); font-weight: 700; }
+.day-title p { margin: 0; color: var(--ink-3); }
+.nav-btn { min-block-size: var(--tap); min-inline-size: var(--tap); display: inline-flex; align-items: center; justify-content: center; gap: .25rem; padding-inline: .7rem; border: 1px solid var(--line-2); border-radius: var(--r); background: var(--surface); font-size: .9375rem; font-weight: 500; }
+.nav-btn:hover:not([disabled]) { border-color: var(--ink-3); }
+.nav-btn[disabled] { opacity: .35; cursor: default; }
+.nav-btn svg { inline-size: 18px; block-size: 18px; }
+.sum-line { display: flex; flex-wrap: wrap; justify-content: center; gap: .25rem 1.25rem; margin: .5rem 0 1.25rem; color: var(--ink-3); font-size: .9375rem; }
+.sum-line b { color: var(--ink); font-size: 1.125rem; font-weight: 600; margin-inline-end: .2rem; font-variant-numeric: tabular-nums; }
+.block { margin-block: 1rem 1.5rem; }
+.block > h3 { display: flex; align-items: center; gap: .4rem; margin: 0 0 .4rem; font-size: 1rem; font-weight: 600; color: var(--ink-3); }
+.now-strip { margin-block-start: 2rem; padding: 1rem 1.1rem; background: var(--surface); border-radius: var(--r); }
+.now-strip h3 { margin: 0 0 .4rem; font-size: 1rem; }
+.now-strip ul { margin: 0; padding-inline-start: 1.1rem; color: var(--ink-2); }
+.now-strip li { margin-block: .2rem; }
+
+/* ---------- entries ---------- */
+.proj { margin-block: 1.25rem 2.25rem; }
+.proj-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: .25rem 1rem; padding-block-end: .45rem; border-block-end: 2px solid var(--ink); }
+.proj-head h2 { margin: 0; font-size: 1.375rem; font-weight: 700; }
+.proj-head .n { color: var(--ink-3); font-size: .9375rem; font-variant-numeric: tabular-nums; }
+.entry { border-block-end: 1px solid var(--line); scroll-margin-block-start: 4rem; }
+.entry-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .15rem .75rem; inline-size: 100%; padding: .8rem .4rem; border: 0; background: none; text-align: start; transition: background var(--t) var(--ease); }
+.entry-head:hover { background: var(--hover); }
+.entry-head .chev { grid-column: 2; grid-row: 1 / span 3; align-self: center; }
+.entry-date { color: var(--ink-3); font-size: .8125rem; font-variant-numeric: tabular-nums; }
+.entry-title { font-weight: 600; font-size: 1.0625rem; line-height: 1.5; }
+.entry-meta { display: flex; flex-wrap: wrap; gap: .3rem .6rem; align-items: center; color: var(--ink-3); font-size: .8125rem; margin-block-start: .15rem; }
+.entry-body { padding: 0 .4rem 1.1rem; max-inline-size: 52rem; }
+
+/* ---------- wip ---------- */
+.wgroup > h2 { display: flex; align-items: baseline; gap: .5rem; margin: 1.5rem 0 .6rem; font-size: 1.125rem; font-weight: 700; }
+.wgroup > h2 .n { color: var(--ink-3); font-weight: 500; font-size: .9375rem; }
+.wcard { background: var(--surface); border-radius: var(--r); margin-block: .6rem; }
+.w-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .25rem .9rem; inline-size: 100%; padding: .95rem 1.1rem; border: 0; border-radius: var(--r); background: none; text-align: start; transition: background var(--t) var(--ease); }
+.w-head:hover { background: color-mix(in srgb, var(--hover) 60%, transparent); }
+.w-head .chev { grid-column: 2; grid-row: 1 / span 3; align-self: center; }
+.w-title { font-weight: 600; font-size: 1.0625rem; line-height: 1.5; }
+.w-meta { display: flex; flex-wrap: wrap; gap: .3rem .7rem; align-items: center; color: var(--ink-3); font-size: .8125rem; }
+.w-sum { color: var(--ink-2); font-size: .975rem; line-height: 1.65; }
+.w-body { padding: 0 1.1rem 1.1rem; }
+.wip-sum { color: var(--ink-3); margin: .25rem 0 0; }
+
+/* ---------- stats ---------- */
+.kpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-block: 1rem 2rem; }
+.kpi { padding: .5rem 1rem .75rem; border-inline-start: 1px solid var(--line); }
+.kpi:nth-child(odd) { border-inline-start: 0; padding-inline-start: 0; }
+.kpi:nth-child(n+3) { border-block-start: 1px solid var(--line); padding-block-start: .9rem; }
+@media (min-width: 760px) {
+  .kpis { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .kpi:nth-child(odd) { border-inline-start: 1px solid var(--line); padding-inline-start: 1.25rem; }
+  .kpi:first-child { border-inline-start: 0; padding-inline-start: 0; }
+  .kpi:nth-child(n+3) { border-block-start: 0; padding-block-start: .5rem; }
+}
+.kpi-n { display: block; font-size: clamp(1.9rem, 1.3rem + 1.8vw, 2.6rem); font-weight: 600; line-height: 1.15; font-variant-numeric: tabular-nums; }
+.kpi-l { display: block; color: var(--ink-2); font-weight: 500; }
+.kpi-s { display: block; color: var(--ink-3); font-size: .875rem; line-height: 1.5; }
+.panels { display: grid; gap: 2rem 3rem; }
+@media (min-width: 900px) { .panels { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); } }
+.panel h2 { margin: 0 0 .2rem; font-size: 1.125rem; font-weight: 600; }
+.panel .sub { margin: 0 0 1rem; color: var(--ink-3); font-size: .9375rem; }
+.heat { --cell: 22px; display: grid; grid-template-columns: auto auto; justify-content: start; gap: .35rem .6rem; }
+.heat-months { grid-column: 2; display: grid; grid-auto-flow: column; grid-auto-columns: var(--cell); gap: 3px; block-size: 1.3rem; font-size: .75rem; color: var(--ink-3); }
+.heat-months span { white-space: nowrap; }
+.heat-days { grid-row: 2; display: grid; grid-template-rows: repeat(7, var(--cell)); gap: 3px; font-size: .75rem; line-height: var(--cell); color: var(--ink-3); }
+.heat-grid { grid-row: 2; display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, var(--cell)); grid-auto-columns: var(--cell); gap: 3px; }
+.cell { inline-size: var(--cell); block-size: var(--cell); padding: 0; border: 0; border-radius: 3px; background: var(--h0); }
+.cell[data-l="1"] { background: var(--h1); } .cell[data-l="2"] { background: var(--h2); } .cell[data-l="3"] { background: var(--h3); } .cell[data-l="4"] { background: var(--h4); }
+.cell.out { visibility: hidden; pointer-events: none; }
+.cell.today { box-shadow: inset 0 0 0 2px var(--accent); }
+.legend { display: flex; align-items: center; gap: 4px; margin-block-start: .75rem; color: var(--ink-3); font-size: .8125rem; }
+.legend i { inline-size: 12px; block-size: 12px; border-radius: 2px; display: inline-block; }
+.legend span { margin-inline: .25rem; }
+.bars { list-style: none; margin: 0; padding: 0; display: grid; gap: .15rem; }
+.bar { display: grid; grid-template-columns: minmax(0, 1fr) 2.5rem; grid-template-areas: "name n" "track track"; gap: .2rem .75rem; inline-size: 100%; padding: .45rem .5rem; margin-inline: -.5rem; border: 0; border-radius: var(--r); background: none; text-align: start; transition: background var(--t) var(--ease); }
+.bar:hover { background: var(--hover); }
+.bar-name { grid-area: name; font-weight: 500; }
+.bar-n { grid-area: n; text-align: end; font-weight: 600; font-variant-numeric: tabular-nums; }
+.bar-track { grid-area: track; block-size: 6px; background: var(--h0); border-radius: 3px; overflow: hidden; }
+.bar-fill { block-size: 100%; background: var(--ink-2); border-radius: 3px; }
+.bar-ok { color: var(--ink-3); font-size: .8125rem; font-weight: 400; }
+.index { inline-size: 100%; border-collapse: collapse; margin-block-start: .5rem; }
+.index th, .index td { text-align: start; vertical-align: top; padding: .6rem .75rem; border-block-end: 1px solid var(--line); }
+.index th { color: var(--ink-3); font-size: .875rem; font-weight: 600; border-block-end-color: var(--ink); }
+.index td:first-child, .index th:first-child { padding-inline-start: 0; }
+.index .p { white-space: nowrap; color: var(--ink-3); font-size: .9375rem; }
+@media (max-width: 680px) {
+  .index thead { display: none; }
+  .index, .index tbody, .index tr, .index td { display: block; }
+  .index tr { padding-block: .7rem; border-block-end: 1px solid var(--line); }
+  .index td { border: 0; padding: .05rem 0; }
+  .index .p { white-space: normal; }
+}
+
+/* ---------- gate ---------- */
+.gate { max-inline-size: 24rem; margin: 3rem auto; padding: 1.5rem; background: var(--surface); border-radius: var(--r); }
+.gate label { display: block; font-weight: 600; margin-block-end: .5rem; }
+.gate .row { display: flex; gap: .5rem; }
+.gate input[type="password"] { flex: 1; min-inline-size: 0; }
+.gate .err { min-block-size: 1.6em; margin: .4rem 0 0; color: var(--danger); font-size: .9375rem; }
+.gate .remember { display: flex; gap: .45rem; align-items: center; color: var(--ink-3); font-size: .9375rem; font-weight: 400; margin: .25rem 0 0; }
+
+footer { border-block-start: 1px solid var(--line); padding-block: 1.25rem 2rem; color: var(--ink-3); font-size: .875rem; }
+footer p { margin: .15rem 0; }
+.tip { position: fixed; z-index: 30; max-inline-size: 16rem; padding: .45rem .65rem; border-radius: var(--r); background: var(--tip-bg); color: var(--tip-ink); font-size: .8125rem; line-height: 1.5; pointer-events: none; opacity: 0; transition: opacity 120ms var(--ease); }
+.tip.on { opacity: 1; }
+.toast { position: fixed; z-index: 40; inset-block-end: 1.25rem; inset-inline: 0; margin-inline: auto; inline-size: max-content; max-inline-size: calc(100% - 2rem); padding: .65rem 1rem; border-radius: var(--r); background: var(--tip-bg); color: var(--tip-ink); font-weight: 500; opacity: 0; transform: translateY(8px); transition: opacity 180ms var(--ease), transform 180ms var(--ease); pointer-events: none; }
+.toast.on { opacity: 1; transform: none; }
+.print-only { display: none; }
+.boot { padding: 4rem 0; color: var(--ink-3); }
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; } }
+@media print {
+  :root, :root[data-theme="dark"] { color-scheme: light; --bg: #fff; --surface: #fff; --ink: #000; --ink-2: #1d2125; --ink-3: #4a5055; --line: #d0d4d6; --line-2: #9aa1a6; --ok: #1f6e38; --ok-bg: #fff; --wip: #7a4a00; --wip-bg: #fff; --wait: #24507e; --wait-bg: #fff; --note: #444; --note-bg: #fff; --h0: #e7e9e8; --hover: transparent; }
+  body { font-size: 10.5pt; line-height: 1.6; }
+  .mast { background: none; color: #000; border-block-end: 2px solid #000; }
+  .mast .wrap { padding: 0 0 .5rem; }
+  .kicker, .meta { color: #333; } .meta b { color: #000; }
+  .mast h1::after, .mast-btns, .tabbar, .toolbar, .tip, .toast, .chev, .nav-btn, .now-strip, .no-print { display: none !important; }
+  .print-only { display: block; margin: .4rem 0 0; color: #333; }
+  .wrap { max-inline-size: none; padding: 0; }
+  [data-collapsible][hidden] { display: block !important; }
+  .wcard, .item-more { background: none; padding-inline: 0; }
+  .entry, .wcard, .item-more, .index tr { break-inside: avoid; }
+  .proj-head, .wgroup > h2 { break-after: avoid; }
+  a { text-decoration: none; }
+  .chip { border: 1px solid currentColor; }
+  @page { margin: 14mm 12mm; }
+}
+</style>
+</head>
+<body>
+<header class="mast">
+  <div class="wrap">
+    <div>
+      <p class="kicker" id="kicker"></p>
+      <h1 id="title">سجل الإنجازات</h1>
+      <p class="meta" id="meta"></p>
+      <p class="print-only" id="print-scope"></p>
+    </div>
+    <div class="mast-btns">
+      <button class="icon-btn" id="lock" type="button" aria-label="اقفل على الجهاز ده" title="اقفل على الجهاز ده" hidden></button>
+      <button class="icon-btn" id="theme" type="button" aria-label="الوضع الداكن"></button>
+    </div>
+  </div>
+</header>
+
+<nav class="tabbar" id="tabbar" hidden><div class="wrap"><div class="tabs" role="tablist" aria-label="الصفحات" id="tabs"></div></div></nav>
+
+<div class="wrap">
+  <div class="toolbar" id="toolbar" hidden>
+    <div class="filters" id="filters">
+      <label class="search" id="search-wrap">
+        <span class="sr">دوّر</span>
+        <input class="field" id="q" type="search" placeholder="دوّر…" autocomplete="off" enterkeyhint="search">
+        <button class="clear" id="q-clear" type="button" aria-label="امسح البحث">✕</button>
+      </label>
+      <label><span class="sr">الفترة</span>
+        <select class="field" id="period">
+          <option value="all">كل الفترة</option>
+          <option value="today">النهارده</option>
+          <option value="yesterday">امبارح</option>
+          <option value="7d">آخر 7 أيام</option>
+          <option value="month">الشهر ده</option>
+          <option value="lastmonth">الشهر اللي فات</option>
+          <option value="custom">فترة…</option>
+        </select>
+      </label>
+      <span class="dates" id="dates">
+        <label><span class="sr">من</span><input class="field" id="from" type="date" dir="ltr"></label>
+        <span aria-hidden="true">–</span>
+        <label><span class="sr">لحد</span><input class="field" id="to" type="date" dir="ltr"></label>
+      </span>
+      <label id="status-wrap"><span class="sr">الحالة</span><select class="field" id="status"></select></label>
+      <label id="proj-wrap"><span class="sr">المشروع</span><select class="field" id="project"></select></label>
+    </div>
+    <div class="result-row">
+      <p class="result" id="result" aria-live="polite"></p>
+      <div class="actions">
+        <button class="btn" id="expand" type="button"></button>
+        <button class="btn primary" id="copy" type="button"></button>
+        <button class="btn" id="print" type="button"></button>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <div id="boot" class="boot">بيحمّل…</div>
+    <section id="gate" class="gate" hidden>
+      <form id="gate-form">
+        <label for="pw">كلمة السر</label>
+        <div class="row">
+          <input class="field" id="pw" type="password" autocomplete="current-password" required>
+          <button class="btn primary" type="submit">افتح</button>
+        </div>
+        <label class="remember"><input type="checkbox" id="remember" checked> افتكرني على الجهاز ده</label>
+        <p class="err" id="pw-err" role="alert"></p>
+      </form>
+    </section>
+    <section class="view" id="v-today" role="tabpanel" hidden></section>
+    <section class="view" id="v-wip" role="tabpanel" hidden></section>
+    <section class="view" id="v-days" role="tabpanel" hidden></section>
+    <section class="view" id="v-done" role="tabpanel" hidden></section>
+    <section class="view" id="v-stats" role="tabpanel" hidden></section>
+  </main>
+</div>
+
+<footer id="footer" hidden><div class="wrap" id="foot"></div></footer>
+<div class="tip" id="tip" role="tooltip"></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script id="worklog-data" type="application/json">{"remote":"data.json"}</script>
+<script>
+(() => {
+'use strict';
+
+/* ================= helpers ================= */
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const store = {
+  get(k) { try { return localStorage.getItem('worklog:' + k); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem('worklog:' + k, v); } catch {} },
+  del(k) { try { localStorage.removeItem('worklog:' + k); } catch {} },
+};
+const pad = (n) => String(n).padStart(2, '0');
+const toISO = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const fromISO = (s) => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+const addDays = (s, n) => { const d = fromISO(s); d.setDate(d.getDate() + n); return toISO(d); };
+const diffDays = (a, b) => Math.round((fromISO(b) - fromISO(a)) / 864e5);
+let TODAY = toISO(new Date());
+const LOC = 'ar-EG-u-nu-latn';
+const FMT = {
+  dm: new Intl.DateTimeFormat(LOC, { day: 'numeric', month: 'long' }),
+  dmy: new Intl.DateTimeFormat(LOC, { day: 'numeric', month: 'long', year: 'numeric' }),
+  wd: new Intl.DateTimeFormat(LOC, { weekday: 'long' }),
+  my: new Intl.DateTimeFormat(LOC, { month: 'long', year: 'numeric' }),
+  m: new Intl.DateTimeFormat(LOC, { month: 'long' }),
+  t: new Intl.DateTimeFormat(LOC, { hour: 'numeric', minute: '2-digit' }),
+};
+const fDM = (s) => FMT.dm.format(fromISO(s));
+const fDMY = (s) => FMT.dmy.format(fromISO(s));
+const fWD = (s) => FMT.wd.format(fromISO(s));
+function fRange(a, b) {
+  if (!b || a === b) return fDM(a);
+  const A = fromISO(a), B = fromISO(b);
+  if (A.getMonth() === B.getMonth() && A.getFullYear() === B.getFullYear()) return `${A.getDate()} – ${FMT.dm.format(B)}`;
+  return `${fDM(a)} – ${fDM(b)}`;
+}
+function dayName(d) { return d === TODAY ? 'النهارده' : d === addDays(TODAY, -1) ? 'امبارح' : fWD(d); }
+// عدّ عربي: 1 مفرد · 2 مثنى · 3–10 جمع · 11+ مفرد
+const NOUNS = {
+  item: ['بند واحد', 'بندين', 'بنود', 'بند'], day: ['يوم واحد', 'يومين', 'أيام', 'يوم'],
+  entry: ['إنجاز واحد', 'إنجازين', 'إنجازات', 'إنجاز'], commit: ['كوميت واحد', 'كوميتين', 'كوميتات', 'كوميت'],
+  row: ['سطر واحد', 'سطرين', 'سطور', 'سطر'], thing: ['حاجة واحدة', 'حاجتين', 'حاجات', 'حاجة'],
+  min: ['دقيقة', 'دقيقتين', 'دقايق', 'دقيقة'], hour: ['ساعة', 'ساعتين', 'ساعات', 'ساعة'],
+};
+const count = (n, k) => { const w = NOUNS[k]; return n === 1 ? w[0] : n === 2 ? w[1] : n <= 10 ? `${n} ${w[2]}` : `${n} ${w[3]}`; };
+const ago = (n, k) => (n === 1 || n === 2 ? count(n, k) : count(n, k));
+function since(iso) {
+  const t = new Date(iso); if (isNaN(t)) return '';
+  const m = Math.floor((Date.now() - t) / 60000);
+  if (m < 1) return 'دلوقتي';
+  if (m < 60) return `من ${ago(m, 'min')}`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `من ${ago(h, 'hour')}`;
+  return `${fDM(toISO(t))} ${FMT.t.format(t)}`;
+}
+const uniq = (a) => [...new Set(a)];
+
+// بحث عربي: أ/إ/آ = ا، ة = ه، ى = ي، والتشكيل والمد مابيفرقوش
+function normMap(text) {
+  let n = ''; const map = [];
+  for (let i = 0; i < text.length; i++) {
+    let c = text[i];
+    if (/[ً-ْٰـ]/.test(c)) continue;
+    if ('أإآٱ'.includes(c)) c = 'ا'; else if (c === 'ة') c = 'ه'; else if (c === 'ى') c = 'ي';
+    else { const l = c.toLowerCase(); if (l.length === 1) c = l; }
+    n += c; map.push(i);
+  }
+  return { n, map };
+}
+const norm = (s) => normMap(String(s)).n;
+const terms = (q) => norm(q).split(/\s+/).filter(Boolean);
+const matches = (hay, ts) => ts.every((t) => hay.includes(t));
+
+const ICON = {
+  ok: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7.2" fill="currentColor" opacity=".16"/><path d="M4.7 8.3l2.2 2.2 4.4-4.7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  wip: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6.2 1.8h3.6M6.7 1.8v4.1L3.4 12a1.3 1.3 0 0 0 1.2 1.9h6.8a1.3 1.3 0 0 0 1.2-1.9L9.3 5.9V1.8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.6 10.4h6.8" stroke="currentColor" stroke-width="1.5"/></svg>',
+  wait: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.4" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 4.6V8l2.3 1.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  note: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10.4 10.4l3.6 3.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+  none: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="2.6" fill="currentColor"/></svg>',
+  chev: '<svg class="chev" viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 7.5L10 12l4.5-4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  back: '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M8 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  fwd: '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M12 5l-5 5 5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  copy: '<svg viewBox="0 0 20 20" aria-hidden="true"><rect x="6.5" y="6.5" width="10" height="11" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M13.5 4.5v-.5A1.5 1.5 0 0 0 12 2.5H5A1.5 1.5 0 0 0 3.5 4v8.5A1.5 1.5 0 0 0 5 14h.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>',
+  print: '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 7V2.5h9V7M5.5 14.5h-2A1.5 1.5 0 0 1 2 13V8.5A1.5 1.5 0 0 1 3.5 7h13A1.5 1.5 0 0 1 18 8.5V13a1.5 1.5 0 0 1-1.5 1.5h-2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M5.5 11.5h9v6h-9z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>',
+  moon: '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M16.5 12.3A7 7 0 0 1 7.7 3.5a7 7 0 1 0 8.8 8.8z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>',
+  sun: '<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3.6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 1.8v2.1M10 16.1v2.1M1.8 10h2.1M16.1 10h2.1M4.2 4.2l1.5 1.5M14.3 14.3l1.5 1.5M4.2 15.8l1.5-1.5M14.3 5.7l1.5-1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+  lock: '<svg viewBox="0 0 20 20" aria-hidden="true"><rect x="4" y="9" width="12" height="8.5" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M6.8 9V6.5a3.2 3.2 0 0 1 6.4 0V9" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>',
+};
+const EMO = { '✅': 'ok', '🧪': 'wip', '⏳': 'wait' };
+const EMO_OF = { ok: '✅', wip: '🧪', wait: '⏳', note: '🔎' };
+const STATUS = { ok: 'على الإنتاج', wip: 'لوكال · مستني موافقة', wait: 'لسه شغالين', note: 'تشخيص من غير كود' };
+const firstEmoji = (s) => { const m = String(s).match(/✅|🧪|⏳/u); return m ? { key: EMO[m[0]], index: m.index, len: m[0].length } : null; };
+const stIcon = (key) => `<span class="st ${key || 'none'}">${ICON[key] || ICON.none}</span>`;
+const chip = (key, label) => key ? `<span class="chip ${key}">${ICON[key]}<span>${esc(label || STATUS[key])}</span></span>` : '';
+
+/* ================= markdown ================= */
+let COMMITS = new Map(), HAS_GIT = false, DOLPHIN_WEB = 'https://github.com/samehmesrega/dolphin-platform', SITE_WEB = '';
+const HASH_RE = /(?<![0-9A-Za-z#/\-])([0-9a-f]{7,40})(?![0-9A-Za-z])/g;
+const isHashLike = (h) => /[a-f]/.test(h) && /\d/.test(h);
+function commitLink(h, ctx) {
+  const k = h.slice(0, 7), info = COMMITS.get(k);
+  if (info) return `<a class="hash" href="${esc(info.repo.web)}/commit/${info.full}" target="_blank" rel="noopener" dir="ltr" title="${esc(info.subject)}">${k}</a>`;
+  if (!HAS_GIT && ctx && ctx.web && isHashLike(h)) return `<a class="hash" href="${esc(ctx.web)}/commit/${h}" target="_blank" rel="noopener" dir="ltr">${k}</a>`;
+  return null;
+}
+function hashesIn(text) {
+  const out = [];
+  for (const m of String(text).matchAll(HASH_RE)) {
+    const h = m[1]; if (!isHashLike(h)) continue;
+    if (HAS_GIT && !COMMITS.has(h.slice(0, 7))) continue;
+    out.push(h.slice(0, 7));
+  }
+  return uniq(out);
+}
+function codeSpan(c, ctx) {
+  if (/^[0-9a-f]{7,40}$/.test(c)) { const l = commitLink(c, ctx); if (l) return l; }
+  const local = c.match(/^vibe-coder\/(.+)$/);
+  if (local && location.protocol === 'file:') return `<a class="file" href="../${local[1].split('/').map(encodeURIComponent).join('/')}" target="_blank"><code dir="auto">${esc(c)}</code></a>`;
+  return `<code dir="auto">${esc(c)}</code>`;
+}
+function inline(src, ctx = {}) {
+  const tok = [];
+  const keep = (html) => `\u0000${tok.push(html) - 1}\u0000`;
+  let s = String(src);
+  s = s.replace(/`([^`]+)`/g, (_, c) => keep(codeSpan(c, ctx)));
+  s = s.replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, (_, t, u) => keep(`<a href="${esc(u)}" target="_blank" rel="noopener">${esc(t)}</a>`));
+  s = s.replace(/https?:\/\/[^\s<>«»)\]،]+/g, (u) => { const t = u.replace(/[.,:;]+$/, ''); return keep(`<a href="${esc(t)}" target="_blank" rel="noopener" dir="ltr">${esc(t)}</a>`) + u.slice(t.length); });
+  s = esc(s);
+  s = s.replace(HASH_RE, (m, h) => { if (!isHashLike(h)) return m; const l = commitLink(h, ctx); return l ? keep(l) : m; });
+  s = s.replace(/PR #(\d+)/g, (_, n) => keep(`<a class="hash" href="${esc(DOLPHIN_WEB)}/pull/${n}" target="_blank" rel="noopener" dir="ltr">PR #${n}</a>`));
+  s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  return s.replace(/\u0000(\d+)\u0000/g, (_, i) => tok[+i]);
+}
+const plain = (s) => String(s).replace(/\*\*/g, '').replace(/`([^`]+)`/g, '$1').replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+function blocks(lines, ctx) {
+  const out = []; let list = null, top = null, nested = false;
+  const flush = () => {
+    if (!list) return;
+    out.push('<ul>' + list.map((it) => `<li>${inline(it.t, ctx)}${it.kids.length ? '<ul>' + it.kids.map((k) => `<li>${inline(k, ctx)}</li>`).join('') + '</ul>' : ''}</li>`).join('') + '</ul>');
+    list = null;
+  };
+  for (const raw of lines) {
+    const t = raw.trim();
+    if (!t || t === '---') continue;
+    const ind = raw.length - raw.trimStart().length;
+    if (t.startsWith('- ')) {
+      if (!list || ind < 2) { list = list || []; top = { t: t.slice(2), kids: [] }; list.push(top); nested = false; }
+      else { top.kids.push(t.slice(2)); nested = true; }
+    } else if (list && ind > 0) { if (nested) top.kids[top.kids.length - 1] += ' ' + t; else top.t += ' ' + t; }
+    else { flush(); out.push(`<p>${inline(t, ctx)}</p>`); }
+  }
+  flush();
+  return out.join('');
+}
+
+/* ================= model ================= */
+const WIP_SEC = { id: 'wip', name: 'شغّال عليه دلوقتي', intro: [], wip: true };
+function cleanProject(name) { return name.replace(/^\d+\)\s*/, '').split(' — ')[0].trim(); }
+function parseAchievements(md) {
+  const R = { title: '', subtitle: '', intro: [], sections: [], entries: [], wipOld: [], index: [] };
+  let mode = 'pre', sec = null, cur = null;
+  const close = () => { if (cur) { R.entries.push(cur); cur = null; } };
+  for (const raw of md.replace(/\r\n/g, '\n').split('\n')) {
+    const l = raw.replace(/\s+$/, '');
+    if (!R.title && l.startsWith('# ')) { const [t, ...rest] = l.slice(2).split(' — '); R.title = t.trim(); R.subtitle = rest.join(' — ').trim(); continue; }
+    if (l.startsWith('## ')) {
+      close();
+      const name = l.slice(3).trim();
+      if (/ملخص/.test(name)) mode = 'index';
+      else if (/شغّال عليه|شغال عليه/.test(name)) { mode = 'wip'; sec = WIP_SEC; }
+      else if (/إزاي الملف|ازاي الملف/.test(name)) mode = 'how';
+      else { mode = 'project'; sec = { id: String(R.sections.length), name: cleanProject(name), intro: [] }; R.sections.push(sec); }
+      continue;
+    }
+    if (mode === 'pre') { if (l.startsWith('>')) R.intro.push(l.replace(/^>\s?/, '')); continue; }
+    if (l.trim() === '---') continue;
+    if (mode === 'index') {
+      if (l.startsWith('|') && !/^\|\s*-/.test(l) && !/^\|\s*المشروع/.test(l)) {
+        const c = l.split('|').slice(1, -1).map((x) => x.trim());
+        if (c.length >= 3) R.index.push({ name: c[0], period: c[1], size: c.slice(2).join(' | ') });
+      }
+      continue;
+    }
+    if (mode === 'project' || mode === 'wip') {
+      if (l.startsWith('### ')) { close(); cur = { sec, head: l.slice(4).trim(), body: [] }; continue; }
+      if (cur) { cur.body.push(raw); continue; }
+      if (mode === 'wip') { if (l.startsWith('- ')) R.wipOld.push(l.slice(2)); else if (l.trim() && R.wipOld.length) R.wipOld[R.wipOld.length - 1] += '\n' + l.trim(); }
+      else if (l.trim()) sec.intro.push(l.trim());
+    }
+  }
+  close();
+  return R;
+}
+const STRIP_COMMITS = (s) => s.replace(/\(\s*(?:كوميت|كوميتات)[^)]*\)/g, '').replace(/\s{2,}/g, ' ').trim();
+function finishEntry(e, i) {
+  const m = e.head.match(/^(\d{4}-\d{2}-\d{2})(?:\s*[←→]\s*(\d{4}-\d{2}-\d{2}))?\s*[—–-]\s*(.*)$/);
+  e.date = m ? m[1] : (e.head.match(/\d{4}-\d{2}-\d{2}/) || [TODAY])[0];
+  e.end = m && m[2] ? m[2] : e.date;
+  if (e.end < e.date) [e.date, e.end] = [e.end, e.date];
+  const rest = m ? m[3] : e.head;
+  const em = firstEmoji(rest);
+  e.title = STRIP_COMMITS(em ? rest.slice(0, em.index) : rest).replace(/[\s—–:-]+$/, '');
+  e.status = em ? em.key : null;
+  e.statusText = STRIP_COMMITS(em ? rest.slice(em.index + em.len) : '').replace(/^[\s—–:،-]+|[\s—–:،-]+$/g, '');
+  const bodyText = e.body.join('\n');
+  if (!e.status) {
+    if (/تشخيص|فحص|تحليل|من غير تعديل/.test(e.title)) e.status = 'note';
+    else if (/لوكال/.test(e.title)) e.status = 'wip';
+    else { const f = firstEmoji(bodyText); if (f) e.status = f.key; }
+  }
+  e.wip = !!e.sec.wip;
+  e.ctx = { web: /digitics\.org/.test(e.sec.name) && SITE_WEB ? SITE_WEB : DOLPHIN_WEB };
+  e.commits = hashesIn(rest + '\n' + bodyText);
+  const ds = new Set();
+  for (let d = e.date; d <= e.end && ds.size < 400; d = addDays(d, 1)) ds.add(d);
+  for (const x of bodyText.matchAll(/(\d{4}-\d{2}-\d{2})/g)) if (x[1] >= e.date && x[1] <= TODAY) ds.add(x[1]);
+  e.dates = [...ds].sort();
+  e.last = e.dates[e.dates.length - 1];
+  // «الخلاصة» = سطر الملخص اللي بيظهر والباقي مقفول
+  let body = e.body.slice();
+  const si = body.findIndex((l) => /^\s*-\s+\*\*الخلاصة:?\*\*:?/.test(l));
+  e.summary = '';
+  if (si >= 0) {
+    let j = si + 1; let s = body[si].replace(/^\s*-\s+\*\*الخلاصة:?\*\*:?\s*/, '');
+    while (j < body.length && body[j].trim() && !/^\s*-\s/.test(body[j])) s += ' ' + body[j++].trim();
+    e.summary = s; body.splice(si, j - si);
+  }
+  e.html = blocks(body, e.ctx);
+  e.hay = norm(e.title + ' ' + e.statusText + ' ' + bodyText + ' ' + e.sec.name);
+  e.words = keyWords(e.title + ' ' + e.summary);
+  e.id = `e-${e.date}-${i}`;
+}
+function oldWipToEntry(b, i) {
+  const m = b.match(/^\*\*(\d{4}-\d{2}-\d{2})(?:\s*[←→]\s*(\d{4}-\d{2}-\d{2}))?\s*[—–-]\s*([\s\S]+?)\*\*\s*[—–:]?\s*([\s\S]*)$/);
+  const e = { sec: WIP_SEC, head: '', body: [] };
+  const date = m ? m[1] : (b.match(/\d{4}-\d{2}-\d{2}/) || [TODAY])[0];
+  const rest = m ? m[4] : b;
+  const f = firstEmoji(rest);
+  e.head = `${date}${m && m[2] ? ' ← ' + m[2] : ''} — ${m ? m[3].trim() : 'بند'}${f ? ' ' + rest.slice(f.index, f.index + f.len) : ''}`;
+  e.body = ['- ' + (f ? rest.slice(0, f.index) + rest.slice(f.index + f.len) : rest).trim().replace(/\n/g, ' ')];
+  finishEntry(e, 'w' + i);
+  if (!e.summary) { const t = plain(rest.replace(/✅|🧪|⏳/gu, '')).trim(); e.summary = t.length > 170 ? t.slice(0, 170).replace(/\s+\S*$/, '') + '…' : t; }
+  return e;
+}
+const STOP = new Set(['اللي', 'بقى', 'بقت', 'بقوا', 'على', 'من', 'في', 'عن', 'مع', 'لحد', 'بدل', 'عشان', 'نزل', 'نزلت', 'اللايف', 'تاني', 'يوم', 'كل', 'ده', 'دي', 'كده', 'لوحده', 'لوحدها', 'مش', 'غير', 'كمان', 'نفس', 'بتاع', 'بتاعة', 'جديد', 'جديدة', 'اتعمل', 'اتعملت', 'بيظهر', 'بتظهر', 'الإنتاج', 'الانتاج', 'مستني', 'لوكال', 'وبقى', 'وبقت', 'بيتحفظ', 'بقي', 'حاجة', 'حوالي', 'قبل', 'بعد', 'اول', 'أول', 'لما', 'بقا']);
+function keyWords(s) {
+  return uniq(norm(plain(s)).replace(/[^\p{L}\p{N}\s]/gu, ' ').split(/\s+/)
+    .map((w) => (w.length >= 5 && w.startsWith('وال') ? w.slice(1) : w))
+    .map((w) => (w.length >= 4 && w.startsWith('و') && !w.startsWith('وظ') ? w.slice(1) : w))
+    .map((w) => (w.length >= 5 && w.startsWith('ال') ? w.slice(2) : w))
+    .filter((w) => w.length >= 3 && !STOP.has(w)));
+}
+function parseDaily(md) {
+  const days = new Map(), legend = {}; let cur = null;
+  for (const raw of md.replace(/\r\n/g, '\n').split('\n')) {
+    const l = raw.replace(/\s+$/, '');
+    if (l.startsWith('>') && firstEmoji(l)) {
+      for (const part of l.replace(/^>\s?/, '').split('·')) { const p = part.trim(), f = firstEmoji(p); if (f && f.index === 0) legend[f.key] = p.slice(f.len).trim(); }
+      continue;
+    }
+    const h = l.match(/^## (\d{4}-\d{2}-\d{2})/);
+    if (h) { cur = days.get(h[1]) || { date: h[1], items: [] }; days.set(h[1], cur); continue; }
+    if (!cur) continue;
+    if (l.startsWith('- ')) {
+      const t = l.slice(2).trim(), f = firstEmoji(t);
+      const key = f && f.index === 0 ? f.key : null;
+      cur.items.push({ status: key, text: key ? t.slice(f.len).trim() : t });
+    } else if (l.trim() && cur.items.length) cur.items[cur.items.length - 1].text += ' ' + l.trim();
+  }
+  return { days: [...days.values()].sort((a, b) => b.date.localeCompare(a.date)), legend };
+}
+
+let M = null; // الموديل الحالي
+function buildModel(DATA, version) {
+  TODAY = toISO(new Date());
+  const repos = (DATA.git && DATA.git.repos) || [];
+  COMMITS = new Map();
+  for (const r of repos) for (const c of r.commits || []) COMMITS.set(c[0].slice(0, 7), { full: c[0], date: c[1].slice(0, 10), subject: c[2], main: !!c[3], files: c[4], ins: c[5], del: c[6], repo: r });
+  HAS_GIT = repos.some((r) => r.commits && r.commits.length);
+  const byKey = Object.fromEntries(repos.map((r) => [r.key, r]));
+  if (byKey.dolphin) DOLPHIN_WEB = byKey.dolphin.web;
+  SITE_WEB = byKey.site ? byKey.site.web : '';
+  const A = parseAchievements(DATA.sources.achievements.text);
+  A.entries.forEach(finishEntry);
+  A.wipOld.forEach((b, i) => A.entries.push(oldWipToEntry(b, i)));
+  const DAILY = parseDaily(DATA.sources.daily.text);
+  Object.assign(STATUS, DAILY.legend);
+  const done = A.entries.filter((e) => !e.wip);
+  const wip = A.entries.filter((e) => e.wip);
+  const START = (A.intro.join(' ').match(/\d{4}-\d{2}-\d{2}/) || [null])[0]
+    || [...DAILY.days.map((d) => d.date), ...A.entries.map((e) => e.date)].sort()[0] || TODAY;
+  const byDay = new Map();
+  for (const c of COMMITS.values()) { if (!byDay.has(c.date)) byDay.set(c.date, []); byDay.get(c.date).push(c); }
+  const entriesByDay = new Map();
+  for (const e of A.entries) for (const d of e.dates) { if (!entriesByDay.has(d)) entriesByDay.set(d, []); entriesByDay.get(d).push(e); }
+  const dayMap = new Map(DAILY.days.map((d) => [d.date, d]));
+  for (const d of DAILY.days) for (const it of d.items) {
+    it.html = inline(it.text, { web: DOLPHIN_WEB }); it.hay = norm(it.text);
+    it.entry = matchEntry(it.text, d.date, entriesByDay);
+  }
+  const index = A.index.map((r, i) => {
+    const s = (r.period.match(/\d{4}-\d{2}-\d{2}/g) || []).sort();
+    return { ...r, id: i, from: s[0] || null, to: s[s.length - 1] || null, hay: norm(r.name + ' ' + r.period + ' ' + r.size) };
+  });
+  const workDays = [...new Set([...DAILY.days.filter((d) => d.items.length).map((d) => d.date), ...byDay.keys()])].filter((d) => d >= START && d <= TODAY).sort();
+  return { DATA, version, A, done, wip, DAILY, START, byDay, entriesByDay, dayMap, index, workDays, repos };
+}
+function matchEntry(text, date, entriesByDay) {
+  const cands = entriesByDay.get(date) || [];
+  if (!cands.length) return null;
+  const w = keyWords(text); if (!w.length) return null;
+  let best = null, bestScore = 0;
+  for (const e of cands) {
+    const hit = w.filter((x) => e.words.includes(x)).length;
+    const score = hit / Math.min(w.length, e.words.length || 1);
+    if (hit >= 2 && score > bestScore) { best = e; bestScore = score; }
+  }
+  return bestScore >= 0.2 ? best : null;
+}
+
+/* ================= state & routing ================= */
+const TABS = [
+  { id: 'today', label: 'النهارده' },
+  { id: 'wip', label: 'شغّال عليه' },
+  { id: 'days', label: 'كل الأيام' },
+  { id: 'done', label: 'الإنجازات' },
+  { id: 'stats', label: 'الأرقام' },
+];
+const S = { tab: 'today', day: null, period: 'all', from: '', to: '', status: 'all', project: 'all', q: '' };
+function readHash() {
+  const h = decodeURIComponent(location.hash.replace(/^#\/?/, ''));
+  const [tab, arg] = h.split('/');
+  if (TABS.some((t) => t.id === tab)) { S.tab = tab; S.day = tab === 'today' && /^\d{4}-\d{2}-\d{2}$/.test(arg || '') ? arg : null; return true; }
+  return false;
+}
+function writeHash() {
+  const h = '#' + S.tab + (S.tab === 'today' && S.day && S.day !== TODAY ? '/' + S.day : '');
+  if (location.hash !== h) history.pushState(null, '', h);
+}
+function range() {
+  const p = S.period;
+  if (p === 'today') return [TODAY, TODAY];
+  if (p === 'yesterday') { const y = addDays(TODAY, -1); return [y, y]; }
+  if (p === '7d') return [addDays(TODAY, -6), TODAY];
+  if (p === 'month') { const d = fromISO(TODAY); return [toISO(new Date(d.getFullYear(), d.getMonth(), 1)), TODAY]; }
+  if (p === 'lastmonth') { const d = fromISO(TODAY); return [toISO(new Date(d.getFullYear(), d.getMonth() - 1, 1)), toISO(new Date(d.getFullYear(), d.getMonth(), 0))]; }
+  if (p === 'custom') { let a = S.from || null, b = S.to || null; if (a && b && a > b) [a, b] = [b, a]; return [a, b]; }
+  return [null, null];
+}
+const inRange = (d, [a, b]) => (!a || d >= a) && (!b || d <= b);
+const statusOk = (k) => S.status === 'all' || S.status === k;
+const FILTER_TABS = new Set(['days', 'done']);
+
+/* ================= render helpers ================= */
+const OPEN = new Set(); // اللي مفتوح يفضل مفتوح بعد أي تحديث
+function commitsHTML(hashes) {
+  const cs = hashes.map((h) => COMMITS.get(h)).filter(Boolean);
+  if (!cs.length) return '';
+  return `<details class="fold"><summary>${ICON.chev}${count(cs.length, 'commit')}</summary><ul class="commit-list">${cs.map(commitLi).join('')}</ul></details>`;
+}
+function commitLi(c) {
+  const st = c.ins != null ? `<span class="x" dir="ltr">+${c.ins} −${c.del}</span>` : '';
+  return `<li><a class="hash" href="${esc(c.repo.web)}/commit/${c.full}" target="_blank" rel="noopener" dir="ltr">${c.full.slice(0, 7)}</a><span class="s" dir="auto">${esc(c.subject)}</span>${st}<span class="x">${esc(c.repo.name)}</span>${c.main ? '' : '<span class="x branch">على فرع</span>'}</li>`;
+}
+function entryDetail(e) { // التفاصيل جوه أي حاجة بتتفتح
+  return `${e.summary ? `<p>${inline(e.summary, e.ctx)}</p>` : ''}<div class="body">${e.html}</div>${commitsHTML(e.commits)}`;
+}
+function itemLi(it, keyPrefix) {
+  const sr = `<span class="sr">${it.status ? STATUS[it.status] : ''}: </span>`;
+  if (!it.entry) return `<li><div class="item-row">${stIcon(it.status)}${sr}<span class="item-t">${it.html}</span></div></li>`;
+  const id = `${keyPrefix}-${it.entry.id}`, open = OPEN.has(id);
+  const e = it.entry;
+  return `<li><button type="button" class="item-btn" data-toggle="${id}" aria-expanded="${open}" aria-controls="${id}">${stIcon(it.status)}${sr}<span class="item-t">${it.html}</span>${ICON.chev}</button>
+    <div class="item-more" id="${id}" data-collapsible ${open ? '' : 'hidden'}>
+      <div class="mini-top"><span>${fRange(e.date, e.end)}${e.last > e.end ? ` · آخر تحديث ${fDM(e.last)}` : ''}</span>${chip(e.status, e.statusText)}<span>${esc(e.sec.name)}</span></div>
+      <p class="mini-title">${inline(e.title, e.ctx)}</p>
+      ${entryDetail(e)}
+    </div></li>`;
+}
+function entryCard(e) {
+  const id = 'b-' + e.id, open = OPEN.has(id) || !!terms(S.q).length;
+  const n = e.commits.filter((h) => COMMITS.has(h)).length;
+  return `<article class="entry" id="${e.id}">
+    <button type="button" class="entry-head" data-toggle="${id}" aria-expanded="${open}" aria-controls="${id}">
+      <span class="entry-date">${fRange(e.date, e.end)}${e.last > e.end ? ` · آخر تحديث ${fDM(e.last)}` : ''}</span>
+      <span class="entry-title">${inline(e.title, e.ctx)}</span>
+      <span class="entry-meta">${chip(e.status, e.statusText)}${n ? `<span>${count(n, 'commit')}</span>` : ''}</span>
+      ${ICON.chev}
+    </button>
+    <div class="entry-body" id="${id}" data-collapsible ${open ? '' : 'hidden'}>${entryDetail(e)}</div>
+  </article>`;
+}
+function wipCard(e) {
+  const id = 'w-' + e.id, open = OPEN.has(id) || !!terms(S.q).length;
+  const age = diffDays(e.date, TODAY);
+  return `<article class="wcard" id="${e.id}">
+    <button type="button" class="w-head" data-toggle="${id}" aria-expanded="${open}" aria-controls="${id}">
+      <span class="w-title">${inline(e.title, e.ctx)}</span>
+      <span class="w-meta">${chip(e.status, e.statusText)}<span>${age <= 0 ? 'من النهارده' : age === 1 ? 'من امبارح' : `من ${count(age, 'day')}`}</span>${e.last > e.date ? `<span>آخر تحديث ${fDM(e.last)}</span>` : ''}</span>
+      ${e.summary ? `<span class="w-sum">${inline(e.summary, e.ctx)}</span>` : ''}
+      ${ICON.chev}
+    </button>
+    <div class="w-body" id="${id}" data-collapsible ${open ? '' : 'hidden'}><div class="body">${e.html}</div>${commitsHTML(e.commits)}</div>
+  </article>`;
+}
+function emptyState(msg, reset = true) {
+  return `<div class="empty"><strong>${msg}</strong>${reset ? '<button type="button" class="linkish" data-act="reset">امسح الفلاتر</button>' : ''}</div>`;
+}
+function highlight(root) {
+  const ts = terms(S.q); if (!ts.length || !root) return;
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, { acceptNode: (n) => n.parentElement.closest('mark, .sr, svg') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT });
+  const nodes = []; while (walker.nextNode()) nodes.push(walker.currentNode);
+  for (const node of nodes) {
+    const text = node.nodeValue, { n, map } = normMap(text);
+    const hits = [];
+    for (const t of ts) { let i = n.indexOf(t); while (i >= 0) { hits.push([map[i], map[i + t.length - 1] + 1]); i = n.indexOf(t, i + t.length); } }
+    if (!hits.length) continue;
+    hits.sort((a, b) => a[0] - b[0]);
+    const frag = document.createDocumentFragment(); let last = 0;
+    for (const [s, e] of hits) { if (s < last) continue; frag.append(text.slice(last, s)); const mk = document.createElement('mark'); mk.textContent = text.slice(s, e); frag.append(mk); last = e; }
+    frag.append(text.slice(last)); node.replaceWith(frag);
+  }
+}
+
+/* ================= views ================= */
+function todayHeading(d) { return d === TODAY ? 'خلصنا إيه النهارده' : d === addDays(TODAY, -1) ? 'خلصنا إيه امبارح' : `خلصنا إيه يوم ${fWD(d)}`; }
+function latestDay() { return M.DAILY.days.find((d) => d.items.length && d.date <= TODAY)?.date || TODAY; }
+function dayList() { return uniq([...M.DAILY.days.filter((d) => d.items.length).map((d) => d.date), ...M.byDay.keys()]).filter((d) => d >= M.START && d <= TODAY).sort(); }
+function renderToday() {
+  const day = S.day || TODAY;
+  const list = dayList();
+  const prev = [...list].reverse().find((d) => d < day) || null;
+  const next = list.find((d) => d > day) || (day < TODAY ? TODAY : null);
+  const rec = M.dayMap.get(day);
+  const items = rec ? rec.items : [];
+  const done = items.filter((i) => i.status === 'ok' || !i.status), moving = items.filter((i) => i.status === 'wip' || i.status === 'wait');
+  const commits = M.byDay.get(day) || [];
+  const related = (M.entriesByDay.get(day) || []).filter((e) => !e.wip);
+  let html = `<div class="day-switch">
+      <button type="button" class="nav-btn" data-day-go="${prev || ''}" ${prev ? '' : 'disabled'} aria-label="اليوم اللي قبله">${ICON.back}${prev ? `<span>${fDM(prev)}</span>` : ''}</button>
+      <div class="day-title"><h2>${todayHeading(day)}</h2><p>${fWD(day)} ${fDMY(day)}</p></div>
+      <button type="button" class="nav-btn" data-day-go="${next || ''}" ${next ? '' : 'disabled'} aria-label="اليوم اللي بعده">${next ? `<span>${next === TODAY ? 'النهارده' : fDM(next)}</span>` : ''}${ICON.fwd}</button>
+    </div>`;
+  if (!items.length && !commits.length) {
+    const last = latestDay();
+    html += `<div class="empty"><strong>${day === TODAY ? 'لسه مفيش حاجة اتسجّلت النهارده.' : 'مفيش شغل متسجّل اليوم ده.'}</strong>${last !== day ? `<button type="button" class="linkish" data-day-go="${last}">آخر يوم شغل: ${fWD(last)} ${fDM(last)}</button>` : ''}</div>`;
+  } else {
+    html += `<p class="sum-line"><span><b>${done.length}</b>خلص</span>${moving.length ? `<span><b>${moving.length}</b>اتقدّم فيه</span>` : ''}${commits.length ? `<span><b>${commits.length}</b>كوميت</span>` : ''}</p>`;
+    if (done.length) html += `<section class="block"><h3>${stIcon('ok')}خلص</h3><ul class="items">${done.map((i) => itemLi(i, 't')).join('')}</ul></section>`;
+    if (moving.length) html += `<section class="block"><h3>${stIcon('wip')}اتقدّم فيه ولسه</h3><ul class="items">${moving.map((i) => itemLi(i, 't')).join('')}</ul></section>`;
+    if (related.length) html += `<details class="fold" ${OPEN.has('today-rel') ? 'open' : ''} data-keep="today-rel"><summary>${ICON.chev}كل تفاصيل شغل اليوم ده (${related.length})</summary>${related.map(entryCard).join('')}</details>`;
+    if (commits.length) html += `<details class="fold" ${OPEN.has('today-commits') ? 'open' : ''} data-keep="today-commits"><summary>${ICON.chev}الكوميتات (${commits.length})</summary><ul class="commit-list">${commits.map(commitLi).join('')}</ul></details>`;
+  }
+  if (day === TODAY && M.wip.length) {
+    const active = M.wip.filter((e) => e.status === 'wait');
+    const show = (active.length ? active : M.wip).slice().sort((a, b) => b.last.localeCompare(a.last)).slice(0, 4);
+    html += `<div class="now-strip"><h3>شغّال عليه دلوقتي (${M.wip.length})</h3><ul>${show.map((e) => `<li>${esc(plain(e.title))}${e.statusText ? ` <span class="muted">— ${esc(e.statusText)}</span>` : ''}</li>`).join('')}</ul><button type="button" class="linkish" data-tab="wip">كل اللي مفتوح</button></div>`;
+  }
+  $('#v-today').innerHTML = html;
+  return '';
+}
+function renderWip() {
+  const ts = terms(S.q);
+  const list = M.wip.filter((e) => !ts.length || matches(e.hay, ts)).sort((a, b) => b.last.localeCompare(a.last) || b.date.localeCompare(a.date));
+  const active = list.filter((e) => e.status === 'wait'), waiting = list.filter((e) => e.status !== 'wait');
+  let html = `<p class="wip-sum">${list.length ? `${count(list.length, 'thing')} مفتوحة${active.length ? ` · شغالين على ${count(active.length, 'thing')}` : ''}${waiting.length ? ` · ${count(waiting.length, 'thing')} خلصت من ناحيتي ومستنية` : ''}` : ''}</p>`;
+  if (active.length) html += `<section class="wgroup"><h2>شغالين عليه <span class="n">${active.length}</span></h2>${active.map(wipCard).join('')}</section>`;
+  if (waiting.length) html += `<section class="wgroup"><h2>خلص من ناحيتي ومستني <span class="n">${waiting.length}</span></h2>${waiting.map(wipCard).join('')}</section>`;
+  if (!list.length) html = emptyState(ts.length ? 'مفيش حاجة مفتوحة بالبحث ده.' : 'مفيش حاجة مفتوحة دلوقتي.', !!ts.length);
+  const v = $('#v-wip'); v.innerHTML = html; highlight(v);
+  return '';
+}
+function filteredDays() {
+  const rg = range(), ts = terms(S.q);
+  return uniq([...M.DAILY.days.map((d) => d.date), ...M.byDay.keys()]).filter((d) => d >= M.START && inRange(d, rg)).sort().reverse().map((date) => {
+    const rec = M.dayMap.get(date);
+    const items = (rec ? rec.items : []).filter((it) => statusOk(it.status) && (!ts.length || matches(it.hay, ts)));
+    const commits = M.byDay.get(date) || [];
+    const onlyCommits = !items.length && !ts.length && S.status === 'all' && commits.length && !(rec && rec.items.length);
+    return items.length || onlyCommits ? { date, items, commits } : null;
+  }).filter(Boolean);
+}
+function renderDays() {
+  const days = filteredDays();
+  const nItems = days.reduce((n, d) => n + d.items.length, 0);
+  let html = '', month = '';
+  for (const d of days) {
+    const mk = d.date.slice(0, 7);
+    if (mk !== month) { month = mk; html += `<h2 class="month" style="margin:1.75rem 0 .25rem;font-size:1.25rem">${FMT.my.format(fromISO(d.date))}</h2>`; }
+    const rec = M.dayMap.get(d.date);
+    const counts = [rec && rec.items.length ? count(rec.items.length, 'item') : '', d.commits.length ? count(d.commits.length, 'commit') : ''].filter(Boolean).join(' · ');
+    html += `<article class="entry" id="d-${d.date}" style="padding-block:.9rem">
+      <div class="mini-top" style="font-size:.875rem"><button type="button" class="linkish" data-day-go="${d.date}" style="font-weight:600;color:var(--ink)">${fWD(d.date)} ${fDM(d.date)}</button><span>${counts}</span></div>
+      ${d.items.length ? `<ul class="items">${d.items.map((it) => itemLi(it, 'd' + d.date)).join('')}</ul>` : `<p class="muted" style="margin:0">مفيش نقط مكتوبة لليوم ده — الكوميتات تحت.</p>`}
+      ${d.commits.length ? `<details class="fold"><summary>${ICON.chev}${count(d.commits.length, 'commit')}</summary><ul class="commit-list">${d.commits.map(commitLi).join('')}</ul></details>` : ''}
+    </article>`;
+  }
+  const v = $('#v-days'); v.innerHTML = html || emptyState('مفيش حاجة بالفلتر ده.'); highlight(v);
+  return days.length ? `${count(nItems, 'item')} في ${count(days.length, 'day')}` : '';
+}
+function filteredDone() {
+  const rg = range(), ts = terms(S.q);
+  return M.done.filter((e) => (S.project === 'all' || e.sec.id === S.project) && statusOk(e.status)
+    && (!rg[0] && !rg[1] ? true : e.dates.some((d) => inRange(d, rg))) && (!ts.length || matches(e.hay, ts)));
+}
+function renderDone() {
+  const list = filteredDone();
+  let html = '';
+  for (const sec of M.A.sections) {
+    const es = list.filter((e) => e.sec === sec).sort((a, b) => b.last.localeCompare(a.last) || b.date.localeCompare(a.date));
+    if (!es.length) continue;
+    const all = M.done.filter((e) => e.sec === sec);
+    const ds = all.flatMap((e) => [e.date, e.last]).sort();
+    html += `<section class="proj"><div class="proj-head"><h2>${esc(sec.name)}</h2><span class="n">${count(es.length, 'entry')}${es.length !== all.length ? ` من ${all.length}` : ''} · ${fRange(ds[0], ds[ds.length - 1])}</span></div>${es.map(entryCard).join('')}</section>`;
+  }
+  const v = $('#v-done'); v.innerHTML = html || emptyState('مفيش إنجاز بالفلتر ده.'); highlight(v);
+  const ok = list.filter((e) => e.status === 'ok').length;
+  return list.length ? `${count(list.length, 'entry')}، منهم ${ok} ${STATUS.ok}` : '';
+}
+let HEAT_WEEKS = 0;
+const level = (n) => (n <= 0 ? 0 : n <= 2 ? 1 : n <= 5 ? 2 : n <= 9 ? 3 : 4);
+function renderStats() {
+  const calDays = diffDays(M.START, TODAY) + 1;
+  const ok = M.done.filter((e) => e.status === 'ok').length;
+  const onMain = [...COMMITS.values()].filter((c) => c.main).length;
+  const tiles = [
+    [M.workDays.length, 'يوم شغل', `من ${count(calDays, 'day')} في الشركة`],
+    [M.done.length, 'إنجاز موثّق', `${ok} منهم ${STATUS.ok}`],
+    HAS_GIT ? [COMMITS.size, 'كوميت', `${onMain} منهم على main`] : [M.DAILY.days.reduce((n, d) => n + d.items.length, 0), 'بند يومي', ''],
+    [M.wip.length, 'مفتوح', 'في «شغّال عليه»'],
+  ];
+  const rows = M.A.sections.map((s) => { const es = M.done.filter((e) => e.sec === s); return { s, n: es.length, ok: es.filter((e) => e.status === 'ok').length }; }).filter((r) => r.n);
+  const max = Math.max(1, ...rows.map((r) => r.n));
+  const idx = filteredIndex();
+  $('#v-stats').innerHTML = `
+    <section class="kpis" aria-label="بالأرقام">${tiles.map(([n, l, s]) => `<div class="kpi"><span class="kpi-n">${n}</span><span class="kpi-l">${l}</span><span class="kpi-s">${esc(s)}</span></div>`).join('')}</section>
+    <div class="panels">
+      <div class="panel"><h2>النشاط يوم بيوم</h2><p class="sub">${count(M.workDays.length, 'day')} فيهم شغل من ${count(calDays, 'day')}</p><div class="heat" id="heat" role="group" aria-label="خريطة النشاط"></div>
+        <div class="legend" aria-hidden="true"><span>أقل</span><i style="background:var(--h0)"></i><i style="background:var(--h1)"></i><i style="background:var(--h2)"></i><i style="background:var(--h3)"></i><i style="background:var(--h4)"></i><span>أكتر</span></div></div>
+      <div class="panel"><h2>المشاريع</h2><p class="sub">${count(M.done.length, 'entry')} في ${rows.length} أقسام</p>
+        <ul class="bars">${rows.map((r) => `<li><button type="button" class="bar" data-proj="${r.s.id}"><span class="bar-name">${esc(r.s.name)}${r.ok ? ` <span class="bar-ok">· ${r.ok} ${esc(STATUS.ok)}</span>` : ''}</span><span class="bar-n">${r.n}</span><span class="bar-track"><span class="bar-fill" style="inline-size:${(r.n / max) * 100}%"></span></span></button></li>`).join('')}</ul></div>
+    </div>
+    <details class="fold" ${OPEN.has('index') || terms(S.q).length ? 'open' : ''} data-keep="index" style="margin-block-start:2rem"><summary>${ICON.chev}الفهرس (${idx.length})</summary>
+      ${idx.length ? `<table class="index"><thead><tr><th scope="col">الشغل</th><th scope="col">الفترة</th><th scope="col">الحجم</th></tr></thead><tbody>${idx.map((r) => `<tr><td>${inline(r.name)}</td><td class="p">${r.from ? fRange(r.from, r.to) : esc(r.period)}</td><td>${inline(r.size)}</td></tr>`).join('')}</tbody></table>` : emptyState('مفيش سطر بالبحث ده.')}
+    </details>`;
+  renderHeat();
+  highlight($('#v-stats details'));
+  return '';
+}
+function filteredIndex() { const ts = terms(S.q); return M.index.filter((r) => !ts.length || matches(r.hay, ts)); }
+function renderHeat() {
+  const el = $('#heat'); if (!el) return;
+  const startDow = (fromISO(M.START).getDay() + 1) % 7; // السبت أول العمود
+  const gridStart = addDays(M.START, -startDow);
+  HEAT_WEEKS = Math.max(1, Math.ceil((diffDays(gridStart, TODAY) + 1) / 7));
+  const cells = [], months = []; let prevMonth = '';
+  for (let w = 0; w < HEAT_WEEKS; w++) {
+    let label = '';
+    for (let r = 0; r < 7; r++) {
+      const d = addDays(gridStart, w * 7 + r), out = d < M.START || d > TODAY;
+      if (!out && d.slice(0, 7) !== prevMonth && !label) { label = FMT.m.format(fromISO(d)); prevMonth = d.slice(0, 7); }
+      const rec = M.dayMap.get(d), items = rec ? rec.items.length : 0, commits = (M.byDay.get(d) || []).length;
+      const tip = `${fWD(d)} ${fDM(d)} — ${items ? count(items, 'item') : 'مفيش بنود'}${commits ? ' · ' + count(commits, 'commit') : ''}`;
+      cells.push(out ? '<span class="cell out" aria-hidden="true"></span>' : `<button type="button" class="cell${d === TODAY ? ' today' : ''}" data-l="${level(items) || (commits ? 1 : 0)}" data-day-go="${d}" data-tip="${esc(tip)}" aria-label="${esc(tip)}"></button>`);
+    }
+    months.push(`<span>${label}</span>`);
+  }
+  const names = ['سبت', '', 'اتنين', '', 'أربع', '', 'جمعة'];
+  el.innerHTML = `<div class="heat-months" aria-hidden="true">${months.join('')}</div><div class="heat-days" aria-hidden="true">${names.map((n) => `<span>${n}</span>`).join('')}</div><div class="heat-grid">${cells.join('')}</div>`;
+  sizeHeat();
+}
+function sizeHeat() {
+  const el = $('#heat'); if (!el || !HEAT_WEEKS) return;
+  const avail = el.parentElement.clientWidth - 44;
+  el.style.setProperty('--cell', Math.max(11, Math.min(30, Math.floor((avail - (HEAT_WEEKS - 1) * 3) / HEAT_WEEKS))) + 'px');
+}
+
+/* ================= frame ================= */
+let lastResult = '';
+function render() {
+  $('#boot').hidden = true; $('#gate').hidden = true;
+  $('#tabbar').hidden = false; $('#toolbar').hidden = false; $('#footer').hidden = false;
+  const counts = { today: (M.dayMap.get(S.day || TODAY)?.items.length) || '', wip: M.wip.length, days: M.workDays.length, done: M.done.length, stats: '' };
+  $('#tabs').innerHTML = TABS.map((t) => `<button type="button" role="tab" class="tab" id="t-${t.id}" aria-controls="v-${t.id}" aria-selected="${S.tab === t.id}" tabindex="${S.tab === t.id ? 0 : -1}">${t.label}${counts[t.id] !== '' ? `<span class="c">${counts[t.id]}</span>` : ''}</button>`).join('');
+  for (const t of TABS) { const v = $('#v-' + t.id); v.hidden = S.tab !== t.id; v.setAttribute('aria-labelledby', 't-' + t.id); if (v.hidden) v.innerHTML = ''; }
+  const filt = FILTER_TABS.has(S.tab);
+  $('#filters').hidden = !filt && S.tab !== 'wip' && S.tab !== 'stats';
+  for (const id of ['#period', '#status-wrap']) $(id).closest('label').hidden = !filt;
+  $('#dates').classList.toggle('on', filt && S.period === 'custom');
+  $('#proj-wrap').hidden = S.tab !== 'done';
+  $('#search-wrap').classList.toggle('has', !!S.q);
+  const keys = S.tab === 'done' ? ['ok', 'wip', 'wait', 'note'] : ['ok', 'wip', 'wait'];
+  if (!keys.includes(S.status)) S.status = 'all';
+  $('#status').innerHTML = `<option value="all">كل الحالات</option>` + keys.map((k) => `<option value="${k}">${EMO_OF[k]} ${esc(STATUS[k])}</option>`).join('');
+  $('#status').value = S.status;
+  const r = { today: renderToday, wip: renderWip, days: renderDays, done: renderDone, stats: renderStats }[S.tab]();
+  lastResult = r;
+  const rg = range(), filtered = filt && (S.status !== 'all' || S.period !== 'all' || (S.tab === 'done' && S.project !== 'all')) || !!S.q;
+  $('#result').innerHTML = r ? `${esc(r)}${filt && (rg[0] || rg[1]) ? ` · ${fRange(rg[0] || M.START, rg[1] || TODAY)}` : ''}${filtered ? ' · <button type="button" class="linkish" data-act="reset">امسح الفلاتر</button>' : ''}` : '';
+  const expandable = $$('[data-collapsible]', $('#v-' + S.tab)).length;
+  $('#expand').hidden = !expandable;
+  $('#expand').textContent = allOpen() ? 'اقفل الكل' : 'افتح الكل';
+  $('#copy').innerHTML = `${ICON.copy}<span class="lg">انسخ الملخص</span><span class="sm">انسخ</span>`;
+  $('#print').innerHTML = `${ICON.print}<span class="lg">اطبع / PDF</span><span class="sm">PDF</span>`;
+  $('#print-scope').textContent = [TABS.find((t) => t.id === S.tab).label, S.tab === 'today' ? fDMY(S.day || TODAY) : '', filt && (rg[0] || rg[1]) ? fRange(rg[0] || M.START, rg[1] || TODAY) : '', S.q ? `«${S.q}»` : '', r].filter(Boolean).join(' · ');
+}
+function allOpen() { const cs = $$('[data-collapsible]', $('#v-' + S.tab)); return cs.length && cs.every((c) => !c.hidden); }
+function renderHeader() {
+  const A = M.A;
+  document.title = A.title || 'سجل الإنجازات';
+  $('#title').textContent = A.title || 'سجل الإنجازات';
+  $('#kicker').textContent = A.subtitle || '';
+  updateMeta();
+  const a = M.DATA.sources.achievements, d = M.DATA.sources.daily;
+  const repos = M.repos.filter((r) => r.commits && r.commits.length).map((r) => `${r.name} (${r.commits.length})`);
+  $('#foot').innerHTML = `<p>من <code>${esc(a.name)}</code> و<code>${esc(d.name)}</code>${repos.length ? ` · الكوميتات من git: ${esc(repos.join(' · '))}` : ''}.</p><p id="foot-sync"></p>`;
+}
+function updateMeta() {
+  if (!M) return;
+  const newest = [M.DATA.sources.achievements.mtime, M.DATA.sources.daily.mtime].sort().pop();
+  $('#meta').innerHTML = `من <b>${fDMY(M.START)}</b> · ${count(diffDays(M.START, TODAY) + 1, 'day')} · اتحدّث ${esc(since(newest))}`;
+  const fs = $('#foot-sync'); if (fs) fs.textContent = REMOTE ? `الصفحة بتشيّك على الجديد كل دقيقة${lastCheck ? ` — آخر مرة ${FMT.t.format(lastCheck)}` : ''}.` : '';
+}
+
+/* ================= summary / print ================= */
+function summaryText() {
+  const head = (x) => `${x}\n`;
+  const em = (k) => (EMO_OF[k] ? EMO_OF[k] + ' ' : '• ');
+  if (S.tab === 'today') {
+    const day = S.day || TODAY, rec = M.dayMap.get(day);
+    const items = rec ? rec.items : [];
+    return head(`${todayHeading(day)} — ${fWD(day)} ${fDMY(day)}`) + '\n' + (items.map((i) => em(i.status) + plain(i.text)).join('\n') || 'مفيش بنود متسجّلة.');
+  }
+  if (S.tab === 'wip') return head(`شغّال عليه دلوقتي (${M.wip.length})`) + '\n' + M.wip.slice().sort((a, b) => b.last.localeCompare(a.last)).map((e) => `${em(e.status)}${plain(e.title)}${e.statusText ? ' — ' + e.statusText : ''}${e.summary ? '\n   ' + plain(e.summary) : ''}`).join('\n');
+  const rg = range();
+  const span = rg[0] || rg[1] ? fRange(rg[0] || M.START, rg[1] || TODAY) : `من ${fDMY(M.START)} لحد النهارده`;
+  if (S.tab === 'days') return head(`${M.A.title} — ${span}`) + '\n' + filteredDays().filter((d) => d.items.length).map((d) => `${fWD(d.date)} ${fDM(d.date)}\n` + d.items.map((it) => em(it.status) + plain(it.text)).join('\n')).join('\n\n');
+  if (S.tab === 'done') {
+    const list = filteredDone();
+    return head(`${M.A.title} — ${span}`) + '\n' + M.A.sections.map((sec) => {
+      const es = list.filter((e) => e.sec === sec).sort((a, b) => b.last.localeCompare(a.last));
+      return es.length ? `${sec.name}\n` + es.map((e) => `${em(e.status)}${plain(e.title)} (${fRange(e.date, e.end)})${e.statusText ? ' — ' + e.statusText : ''}`).join('\n') : '';
+    }).filter(Boolean).join('\n\n');
+  }
+  const ok = M.done.filter((e) => e.status === 'ok').length;
+  return head(`${M.A.title} — بالأرقام`) + `\n${M.workDays.length} يوم شغل · ${M.done.length} إنجاز (${ok} ${STATUS.ok}) · ${COMMITS.size} كوميت · ${M.wip.length} مفتوح\n\n` + filteredIndex().map((r) => `• ${plain(r.name)} — ${r.from ? fRange(r.from, r.to) : r.period} — ${plain(r.size)}`).join('\n');
+}
+async function copyText(t) {
+  try { await navigator.clipboard.writeText(t); return true; } catch {}
+  const ta = document.createElement('textarea'); ta.value = t; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.append(ta); ta.select(); let ok = false; try { ok = document.execCommand('copy'); } catch {} ta.remove(); return ok;
+}
+let toastTimer = 0;
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('on'), 2800); }
+function applyTheme(t) {
+  if (t) document.documentElement.dataset.theme = t; else delete document.documentElement.dataset.theme;
+  const dark = t ? t === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  const b = $('#theme'); b.innerHTML = dark ? ICON.sun : ICON.moon; b.setAttribute('aria-label', dark ? 'الوضع الفاتح' : 'الوضع الداكن');
+}
+
+/* ================= events ================= */
+function go(patch, opts = {}) {
+  Object.assign(S, patch);
+  if (patch.tab || 'day' in patch) writeHash();
+  syncInputs(); render();
+  if (opts.top) window.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+}
+function syncInputs() { $('#q').value = S.q; $('#period').value = S.period; $('#from').value = S.from; $('#to').value = S.to; $('#project').value = S.project; }
+function setOpen(id, open) {
+  const box = document.getElementById(id); if (!box) return;
+  box.hidden = !open;
+  $$(`[data-toggle="${id}"]`).forEach((b) => b.setAttribute('aria-expanded', String(open)));
+  if (open) OPEN.add(id); else OPEN.delete(id);
+}
+document.addEventListener('click', (ev) => {
+  const t = ev.target.closest('button'); if (!t || !M) return;
+  if (t.matches('.tab')) { go({ tab: t.id.slice(2), day: t.id === 't-today' ? null : S.day }); return; }
+  if (t.dataset.toggle) { const id = t.dataset.toggle; setOpen(id, document.getElementById(id)?.hidden); $('#expand').textContent = allOpen() ? 'اقفل الكل' : 'افتح الكل'; return; }
+  if (t.dataset.dayGo !== undefined) { if (!t.dataset.dayGo) return; go({ tab: 'today', day: t.dataset.dayGo === TODAY ? null : t.dataset.dayGo }, { top: true }); return; }
+  if (t.dataset.tab) { go({ tab: t.dataset.tab }, { top: true }); return; }
+  if (t.dataset.act === 'reset') { go({ period: 'all', from: '', to: '', status: 'all', project: 'all', q: '' }); return; }
+  if (t.dataset.proj) { go({ tab: 'done', project: t.dataset.proj }, { top: true }); return; }
+});
+document.addEventListener('toggle', (ev) => { const d = ev.target; if (d.dataset && d.dataset.keep) { if (d.open) OPEN.add(d.dataset.keep); else OPEN.delete(d.dataset.keep); } }, true);
+$('#expand').addEventListener('click', () => {
+  const open = !allOpen();
+  $$('[data-collapsible]', $('#v-' + S.tab)).forEach((c) => setOpen(c.id, open));
+  $('#expand').textContent = open ? 'اقفل الكل' : 'افتح الكل';
+});
+$('#tabs').addEventListener('keydown', (ev) => {
+  const i = TABS.findIndex((t) => t.id === S.tab); let j = -1;
+  if (ev.key === 'ArrowLeft') j = (i + 1) % TABS.length; else if (ev.key === 'ArrowRight') j = (i - 1 + TABS.length) % TABS.length;
+  else if (ev.key === 'Home') j = 0; else if (ev.key === 'End') j = TABS.length - 1;
+  if (j < 0) return; ev.preventDefault(); go({ tab: TABS[j].id }); $('#t-' + TABS[j].id).focus();
+});
+let qTimer = 0;
+$('#q').addEventListener('input', (ev) => { clearTimeout(qTimer); qTimer = setTimeout(() => { S.q = ev.target.value; render(); }, 140); });
+$('#q').addEventListener('keydown', (ev) => { if (ev.key === 'Escape' && S.q) { ev.preventDefault(); go({ q: '' }); } });
+$('#q-clear').addEventListener('click', () => { go({ q: '' }); $('#q').focus(); });
+$('#period').addEventListener('change', (ev) => { const v = ev.target.value; go(v === 'custom' && !S.from ? { period: v, from: addDays(TODAY, -6), to: TODAY } : { period: v }); });
+$('#from').addEventListener('change', (ev) => go({ from: ev.target.value }));
+$('#to').addEventListener('change', (ev) => go({ to: ev.target.value }));
+$('#status').addEventListener('change', (ev) => go({ status: ev.target.value }));
+$('#project').addEventListener('change', (ev) => go({ project: ev.target.value }));
+$('#copy').addEventListener('click', async () => { const ok = await copyText(summaryText()); toast(ok ? `اتنسخ${lastResult ? ' — ' + lastResult : ''}` : 'النسخ ماشتغلش — جرّب تاني'); });
+$('#print').addEventListener('click', () => window.print());
+window.addEventListener('beforeprint', () => { $$('#v-' + S.tab + ' details').forEach((d) => { d.dataset.wasOpen = d.open ? '1' : ''; d.open = true; }); });
+window.addEventListener('afterprint', () => { $$('#v-' + S.tab + ' details').forEach((d) => { d.open = !!d.dataset.wasOpen; }); });
+window.addEventListener('popstate', () => { if (M && readHash()) { syncInputs(); render(); } });
+window.addEventListener('hashchange', () => { if (M && readHash()) { syncInputs(); render(); } });
+document.addEventListener('keydown', (ev) => { if (ev.key === '/' && M && !/^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement.tagName) && !$('#filters').hidden) { ev.preventDefault(); $('#q').focus(); } });
+$('#theme').addEventListener('click', () => {
+  const dark = document.documentElement.dataset.theme ? document.documentElement.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  const next = dark ? 'light' : 'dark'; store.set('theme', next); applyTheme(next);
+});
+const tip = $('#tip');
+function showTip(el) {
+  tip.textContent = el.dataset.tip; tip.classList.add('on');
+  const r = el.getBoundingClientRect(), w = tip.offsetWidth, h = tip.offsetHeight;
+  tip.style.left = Math.max(8, Math.min(r.left + r.width / 2 - w / 2, innerWidth - w - 8)) + 'px';
+  tip.style.top = (r.top - h - 8 < 8 ? r.bottom + 8 : r.top - h - 8) + 'px';
+}
+document.addEventListener('pointerover', (ev) => { const c = ev.target.closest && ev.target.closest('.cell[data-tip]'); if (c) showTip(c); });
+document.addEventListener('pointerout', (ev) => { if (ev.target.closest && ev.target.closest('.cell')) tip.classList.remove('on'); });
+document.addEventListener('focusin', (ev) => { const c = ev.target.closest && ev.target.closest('.cell[data-tip]'); if (c) showTip(c); else tip.classList.remove('on'); });
+window.addEventListener('scroll', () => tip.classList.remove('on'), { passive: true });
+let rz = 0; window.addEventListener('resize', () => { cancelAnimationFrame(rz); rz = requestAnimationFrame(sizeHeat); });
+
+/* ================= data: embedded (local file) or remote (GitHub Pages) ================= */
+let EMBED = null;
+try { EMBED = JSON.parse(document.getElementById('worklog-data').textContent); } catch {}
+const REMOTE = EMBED && EMBED.remote ? EMBED.remote : null;
+let lastCheck = null, checking = false;
+const b64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
+const toB64 = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf)));
+async function deriveKey(pw, enc) {
+  const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey({ name: 'PBKDF2', salt: b64(enc.salt), iterations: enc.iter, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, true, ['decrypt']);
+}
+async function decryptPkg(enc, key) {
+  const buf = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64(enc.iv) }, key, b64(enc.ct));
+  const text = await new Response(new Blob([buf]).stream().pipeThrough(new DecompressionStream('gzip'))).text();
+  return JSON.parse(text);
+}
+async function savedKey(enc) {
+  try {
+    const s = JSON.parse(store.get('key') || 'null');
+    if (!s || s.salt !== enc.salt || s.iter !== enc.iter) return null;
+    return await crypto.subtle.importKey('raw', b64(s.k), 'AES-GCM', true, ['decrypt']);
+  } catch { return null; }
+}
+let KEY = null, PENDING_PKG = null;
+function start(data, version, keepState) {
+  const scrollY = window.scrollY;
+  M = buildModel(data, version);
+  if (!keepState) { if (!readHash()) S.tab = 'today'; }
+  renderHeader(); syncInputs(); render();
+  if (keepState) window.scrollTo(0, scrollY);
+}
+async function fetchPkg() {
+  const res = await fetch(REMOTE + '?t=' + Date.now(), { cache: 'no-store' });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  return res.json();
+}
+async function openPkg(pkg, keepState) {
+  if (pkg.data) { start(pkg.data, pkg.version, keepState); return true; }
+  if (!KEY) KEY = await savedKey(pkg.enc);
+  if (KEY) { try { start(await decryptPkg(pkg.enc, KEY), pkg.version, keepState); return true; } catch { KEY = null; } }
+  return false;
+}
+async function check(first) {
+  if (checking) return; checking = true;
+  try {
+    const pkg = await fetchPkg();
+    lastCheck = new Date();
+    if (!first && M && pkg.version === M.version) { updateMeta(); return; }
+    const ok = await openPkg(pkg, !first);
+    if (ok) { if (!first) toast('اتحدّث — فيه جديد'); $('#lock').hidden = !pkg.enc; }
+    else if (first || !M) showGate(pkg);
+  } catch (err) {
+    if (first) $('#boot').textContent = 'الصفحة ماحمّلتش — اتأكد من النت وجرّب تاني.';
+  } finally { checking = false; }
+}
+function showGate(pkg) {
+  PENDING_PKG = pkg;
+  $('#boot').hidden = true; $('#gate').hidden = false; $('#tabbar').hidden = true; $('#toolbar').hidden = true; $('#footer').hidden = true;
+  for (const v of $$('.view')) v.hidden = true;
+  $('#pw').focus();
+}
+$('#gate-form').addEventListener('submit', async (ev) => {
+  ev.preventDefault();
+  const pw = $('#pw').value; if (!pw || !PENDING_PKG) return;
+  $('#pw-err').textContent = '';
+  try {
+    const key = await deriveKey(pw, PENDING_PKG.enc);
+    const data = await decryptPkg(PENDING_PKG.enc, key);
+    KEY = key;
+    if ($('#remember').checked) store.set('key', JSON.stringify({ k: toB64(await crypto.subtle.exportKey('raw', key)), salt: PENDING_PKG.enc.salt, iter: PENDING_PKG.enc.iter }));
+    $('#pw').value = '';
+    start(data, PENDING_PKG.version, false);
+    $('#lock').hidden = false;
+  } catch { $('#pw-err').textContent = 'كلمة السر غلط.'; $('#pw').select(); }
+});
+$('#lock').addEventListener('click', () => { store.del('key'); KEY = null; M = null; location.reload(); });
+
+/* ================= boot ================= */
+applyTheme(store.get('theme'));
+matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', () => { if (!document.documentElement.dataset.theme) applyTheme(null); });
+$('#lock').innerHTML = ICON.lock;
+if (EMBED && EMBED.sources) start(EMBED, null, false);
+else if (REMOTE) {
+  check(true);
+  const POLL = Math.max(5, +new URLSearchParams(location.search).get('poll') || 60) * 1000;
+  setInterval(() => { if (document.visibilityState === 'visible' && M) check(false); }, POLL);
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && M) check(false); });
+} else $('#boot').innerHTML = 'القالب ده من غير داتا. افتح <code>سجل-الإنجازات.html</code> أو شغّل <code>node build.mjs</code>.';
+setInterval(() => {
+  const t = toISO(new Date());
+  if (M && t !== TODAY) { start(M.DATA, M.version, true); } else updateMeta();
+}, 30000);
+})();
+</script>
+</body>
+</html>
