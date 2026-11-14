@@ -115,7 +115,8 @@ mark { background: var(--mark); color: inherit; border-radius: 1px; }
 main { padding-block: .5rem 3rem; min-block-size: 50vh; }
 .st { display: inline-grid; place-items: center; inline-size: 1.25rem; block-size: 1.25rem; flex: none; }
 .st svg { inline-size: 1.15rem; block-size: 1.15rem; }
-.st.ok { color: var(--ok); } .st.wip { color: var(--wip); } .st.wait { color: var(--wait); } .st.note { color: var(--note); } .st.none { color: var(--line-2); }
+.st.ok { color: var(--ok); } .st.wip { color: var(--wip); } .st.wait { color: var(--wait); } .st.note { color: var(--note); } .st.none, .st.stop { color: var(--line-2); }
+.chip.stop { color: var(--ink-3); background: var(--h0); }
 .chip { display: inline-flex; align-items: center; gap: .3rem; padding: .05rem .5rem .1rem; border-radius: var(--r); font-size: .8125rem; font-weight: 600; line-height: 1.6; max-inline-size: 100%; }
 .chip svg { inline-size: .95rem; block-size: .95rem; flex: none; }
 .chip.ok { color: var(--ok); background: var(--ok-bg); } .chip.wip { color: var(--wip); background: var(--wip-bg); }
@@ -453,6 +454,7 @@ const ICON = {
   wait: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.4" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 4.6V8l2.3 1.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   note: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10.4 10.4l3.6 3.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
   none: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="2.6" fill="currentColor"/></svg>',
+  stop: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.4" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="5.6" y="5.6" width="4.8" height="4.8" rx=".6" fill="currentColor"/></svg>',
   chev: '<svg class="chev" viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 7.5L10 12l4.5-4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   back: '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M8 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   fwd: '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M12 5l-5 5 5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
@@ -462,10 +464,10 @@ const ICON = {
   sun: '<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3.6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 1.8v2.1M10 16.1v2.1M1.8 10h2.1M16.1 10h2.1M4.2 4.2l1.5 1.5M14.3 14.3l1.5 1.5M4.2 15.8l1.5-1.5M14.3 5.7l1.5-1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
   lock: '<svg viewBox="0 0 20 20" aria-hidden="true"><rect x="4" y="9" width="12" height="8.5" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M6.8 9V6.5a3.2 3.2 0 0 1 6.4 0V9" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>',
 };
-const EMO = { '✅': 'ok', '🧪': 'wip', '⏳': 'wait' };
-const EMO_OF = { ok: '✅', wip: '🧪', wait: '⏳', note: '🔎' };
-const STATUS = { ok: 'على الإنتاج', wip: 'لوكال · مستني موافقة', wait: 'لسه شغالين', note: 'تشخيص من غير كود' };
-const firstEmoji = (s) => { const m = String(s).match(/✅|🧪|⏳/u); return m ? { key: EMO[m[0]], index: m.index, len: m[0].length } : null; };
+const EMO = { '✅': 'ok', '🧪': 'wip', '⏳': 'wait', '⏹': 'stop' };
+const EMO_OF = { ok: '✅', wip: '🧪', wait: '⏳', note: '🔎', stop: '⏹' };
+const STATUS = { ok: 'على الإنتاج', wip: 'لوكال · مستني موافقة', wait: 'لسه شغالين', note: 'تشخيص من غير كود', stop: 'اتوقف' };
+const firstEmoji = (s) => { const m = String(s).match(/✅|🧪|⏳|⏹️?/u); return m ? { key: EMO[m[0].replace('️', '')], index: m.index, len: m[0].length } : null; };
 const stIcon = (key) => `<span class="st ${key || 'none'}">${ICON[key] || ICON.none}</span>`;
 const chip = (key, label) => key ? `<span class="chip ${key}">${ICON[key]}<span>${esc(label || STATUS[key])}</span></span>` : '';
 
@@ -662,7 +664,7 @@ function buildModel(DATA, version) {
   const DAILY = parseDaily(DATA.sources.daily.text);
   Object.assign(STATUS, DAILY.legend);
   const done = A.entries.filter((e) => !e.wip);
-  const wip = A.entries.filter((e) => e.wip);
+  const wip = A.entries.filter((e) => e.wip && e.status !== 'stop' && e.status !== 'ok'); // اللي خلص أو اتوقف مش «مفتوح» حتى لو لسه في القسم
   const START = (A.intro.join(' ').match(/\d{4}-\d{2}-\d{2}/) || [null])[0]
     || [...DAILY.days.map((d) => d.date), ...A.entries.map((e) => e.date)].sort()[0] || TODAY;
   const byDay = new Map();
@@ -810,6 +812,7 @@ function renderToday() {
   const rec = M.dayMap.get(day);
   const items = rec ? rec.items : [];
   const done = items.filter((i) => i.status === 'ok' || !i.status), moving = items.filter((i) => i.status === 'wip' || i.status === 'wait');
+  const stopped = items.filter((i) => i.status === 'stop');
   const commits = M.byDay.get(day) || [];
   const related = (M.entriesByDay.get(day) || []).filter((e) => !e.wip);
   let html = `<div class="day-switch">
@@ -824,6 +827,7 @@ function renderToday() {
     html += `<p class="sum-line"><span><b>${done.length}</b>خلص</span>${moving.length ? `<span><b>${moving.length}</b>اتقدّم فيه</span>` : ''}${commits.length ? `<span><b>${commits.length}</b>كوميت</span>` : ''}</p>`;
     if (done.length) html += `<section class="block"><h3>${stIcon('ok')}خلص</h3><ul class="items">${done.map((i) => itemLi(i, 't')).join('')}</ul></section>`;
     if (moving.length) html += `<section class="block"><h3>${stIcon('wip')}اتقدّم فيه ولسه</h3><ul class="items">${moving.map((i) => itemLi(i, 't')).join('')}</ul></section>`;
+    if (stopped.length) html += `<section class="block"><h3>${stIcon('stop')}اتوقف</h3><ul class="items">${stopped.map((i) => itemLi(i, 't')).join('')}</ul></section>`;
     if (related.length) html += `<details class="fold" ${OPEN.has('today-rel') ? 'open' : ''} data-keep="today-rel"><summary>${ICON.chev}كل تفاصيل شغل اليوم ده (${related.length})</summary>${related.map(entryCard).join('')}</details>`;
     if (commits.length) html += `<details class="fold" ${OPEN.has('today-commits') ? 'open' : ''} data-keep="today-commits"><summary>${ICON.chev}الكوميتات (${commits.length})</summary><ul class="commit-list">${commits.map(commitLi).join('')}</ul></details>`;
   }
@@ -965,7 +969,7 @@ function render() {
   $('#dates').classList.toggle('on', filt && S.period === 'custom');
   $('#proj-wrap').hidden = S.tab !== 'done';
   $('#search-wrap').classList.toggle('has', !!S.q);
-  const keys = S.tab === 'done' ? ['ok', 'wip', 'wait', 'note'] : ['ok', 'wip', 'wait'];
+  const keys = S.tab === 'done' ? ['ok', 'wip', 'wait', 'note', 'stop'] : ['ok', 'wip', 'wait', 'stop'];
   if (!keys.includes(S.status)) S.status = 'all';
   $('#status').innerHTML = `<option value="all">كل الحالات</option>` + keys.map((k) => `<option value="${k}">${EMO_OF[k]} ${esc(STATUS[k])}</option>`).join('');
   $('#status').value = S.status;
