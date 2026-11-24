@@ -1109,10 +1109,18 @@ function render() {
   $('#tabs').innerHTML = TABS.map((t) => `<button type="button" role="tab" class="tab" id="t-${t.id}" aria-controls="v-${t.id}" aria-selected="${S.tab === t.id}" tabindex="${S.tab === t.id ? 0 : -1}">${t.label}${counts[t.id] !== '' ? `<span class="c">${counts[t.id]}</span>` : ''}</button>`).join('');
   for (const t of TABS) { const v = $('#v-' + t.id); v.hidden = S.tab !== t.id; v.setAttribute('aria-labelledby', 't-' + t.id); if (v.hidden) v.innerHTML = ''; }
   const filt = FILTER_TABS.has(S.tab);
-  $('#filters').hidden = !filt && S.tab !== 'wip' && S.tab !== 'stats';
+  const both = !BASE.scope; // الباسورد الكامل: الشركتين جوه، فيه سويتش
+  $('#company').hidden = !both;
+  $('#company').innerHTML = both ? COMPANY_OPTS.map((c) => `<button type="button" data-company="${c.id}" aria-pressed="${S.company === c.id}">${esc(c.name)}</button>`).join('') : '';
+  $('#search-wrap').hidden = S.tab === 'today';
+  $('#filters').hidden = S.tab === 'today' && !both;
   for (const id of ['#period', '#status-wrap']) $(id).closest('label').hidden = !filt;
   $('#dates').classList.toggle('on', filt && S.period === 'custom');
   $('#proj-wrap').hidden = S.tab !== 'done';
+  const secs = M.A.sections.filter((s) => M.done.some((e) => e.sec === s));
+  if (S.project !== 'all' && !secs.some((s) => s.id === S.project)) S.project = 'all';
+  $('#project').innerHTML = `<option value="all">كل المشاريع</option>` + secs.map((s) => `<option value="${s.id}">${esc(s.name)}</option>`).join('');
+  $('#project').value = S.project;
   $('#search-wrap').classList.toggle('has', !!S.q);
   const keys = S.tab === 'done' ? ['ok', 'wip', 'wait', 'note', 'stop'] : ['ok', 'wip', 'wait', 'stop'];
   if (!keys.includes(S.status)) S.status = 'all';
@@ -1127,7 +1135,7 @@ function render() {
   $('#expand').textContent = allOpen() ? 'اقفل الكل' : 'افتح الكل';
   $('#copy').innerHTML = `${ICON.copy}<span class="lg">انسخ الملخص</span><span class="sm">انسخ</span>`;
   $('#print').innerHTML = `${ICON.print}<span class="lg">اطبع / PDF</span><span class="sm">PDF</span>`;
-  $('#print-scope').textContent = [TABS.find((t) => t.id === S.tab).label, S.tab === 'today' ? fDMY(S.day || TODAY) : '', filt && (rg[0] || rg[1]) ? fRange(rg[0] || M.START, rg[1] || TODAY) : '', S.q ? `«${S.q}»` : '', r].filter(Boolean).join(' · ');
+  $('#print-scope').textContent = [TABS.find((t) => t.id === S.tab).label, companyName(coNow()), S.tab === 'today' ? fDMY(S.day || TODAY) : '', filt && (rg[0] || rg[1]) ? fRange(rg[0] || M.START, rg[1] || TODAY) : '', S.q ? `«${S.q}»` : '', r].filter(Boolean).join(' · ');
 }
 function allOpen() { const cs = $$('[data-collapsible]', $('#v-' + S.tab)); return cs.length && cs.every((c) => !c.hidden); }
 function renderHeader() {
@@ -1149,7 +1157,8 @@ function updateMeta() {
 
 /* ================= summary / print ================= */
 function summaryText() {
-  const head = (x) => `${x}\n`;
+  const co = companyName(coNow());
+  const head = (x) => `${co ? x.replace(/ — | \(|$/, (m) => ` — ${co}${m}`) : x}\n`;
   const em = (k) => (EMO_OF[k] ? EMO_OF[k] + ' ' : '• ');
   if (S.tab === 'today') {
     const day = S.day || TODAY, rec = M.dayMap.get(day);
@@ -1185,7 +1194,9 @@ function applyTheme(t) {
 
 /* ================= events ================= */
 function go(patch, opts = {}) {
+  const co = 'company' in patch && patch.company !== S.company;
   Object.assign(S, patch);
+  if (co) { store.set('company', S.company); M = buildModel(viewData(), M.version); renderHeader(); }
   if (patch.tab || 'day' in patch) writeHash();
   syncInputs(); render();
   if (opts.top) window.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
@@ -1205,6 +1216,7 @@ document.addEventListener('click', (ev) => {
   if (t.dataset.tab) { go({ tab: t.dataset.tab }, { top: true }); return; }
   if (t.dataset.act === 'reset') { go({ period: 'all', from: '', to: '', status: 'all', project: 'all', q: '' }); return; }
   if (t.dataset.proj) { go({ tab: 'done', project: t.dataset.proj }, { top: true }); return; }
+  if (t.dataset.company) { go({ company: t.dataset.company, project: 'all' }); return; }
 });
 document.addEventListener('toggle', (ev) => { const d = ev.target; if (d.dataset && d.dataset.keep) { if (d.open) OPEN.add(d.dataset.keep); else OPEN.delete(d.dataset.keep); } }, true);
 $('#expand').addEventListener('click', () => {
