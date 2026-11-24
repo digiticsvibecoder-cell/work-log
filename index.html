@@ -1335,12 +1335,17 @@ $('#gate-form').addEventListener('submit', async (ev) => {
   const pw = $('#pw').value; if (!pw || !PENDING_PKG) return;
   $('#pw-err').textContent = '';
   try {
-    const key = await deriveKey(pw, PENDING_PKG.enc);
-    const data = await decryptPkg(PENDING_PKG.enc, key);
-    KEY = key;
-    if ($('#remember').checked) store.set('key', JSON.stringify({ k: toB64(await crypto.subtle.exportKey('raw', key)), salt: PENDING_PKG.enc.salt, iter: PENDING_PKG.enc.iter }));
+    // الباسورد بيتجرّب على التلات نسخ مع بعض، والكاملة الأول لو اتنين اتفتحوا
+    const tries = await Promise.all(encsOf(PENDING_PKG).map(async (enc) => {
+      try { const key = await deriveKey(pw, enc); return { enc, key, data: await decryptPkg(enc, key) }; } catch { return null; }
+    }));
+    const hit = tries.find(Boolean);
+    if (!hit) throw new Error('wrong password');
+    const key = hit.key, data = hit.data;
+    KEY = { salt: hit.enc.salt, key };
+    if ($('#remember').checked) store.set('key', JSON.stringify({ k: toB64(await crypto.subtle.exportKey('raw', key)), salt: hit.enc.salt, iter: hit.enc.iter }));
     $('#pw').value = '';
-    start(data, PENDING_PKG.version, false);
+    start(data, verOf(PENDING_PKG, hit.enc), false);
     $('#lock').hidden = false;
   } catch { $('#pw-err').textContent = 'كلمة السر غلط.'; $('#pw').select(); }
 });
