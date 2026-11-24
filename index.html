@@ -1245,7 +1245,7 @@ window.addEventListener('beforeprint', () => { $$('#v-' + S.tab + ' details').fo
 window.addEventListener('afterprint', () => { $$('#v-' + S.tab + ' details').forEach((d) => { d.open = !!d.dataset.wasOpen; }); });
 window.addEventListener('popstate', () => { if (M && readHash()) { syncInputs(); render(); } });
 window.addEventListener('hashchange', () => { if (M && readHash()) { syncInputs(); render(); } });
-document.addEventListener('keydown', (ev) => { if (ev.key === '/' && M && !/^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement.tagName) && !$('#filters').hidden) { ev.preventDefault(); $('#q').focus(); } });
+document.addEventListener('keydown', (ev) => { if (ev.key === '/' && M && !/^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement.tagName) && !$('#filters').hidden && !$('#search-wrap').hidden) { ev.preventDefault(); $('#q').focus(); } });
 $('#theme').addEventListener('click', () => {
   const dark = document.documentElement.dataset.theme ? document.documentElement.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
   const next = dark ? 'light' : 'dark'; store.set('theme', next); applyTheme(next);
@@ -1279,17 +1279,22 @@ async function decryptPkg(enc, key) {
   const text = await new Response(new Blob([buf]).stream().pipeThrough(new DecompressionStream('gzip'))).text();
   return JSON.parse(text);
 }
-async function savedKey(enc) {
+// تلات نسخ متشفّرة: `enc` الكاملة + `scoped` (مجسّم بس، ديجيتكس بس)، كل واحدة بباسورد وsalt. المفتاح بيفتكر الـsalt بتاعه.
+const encsOf = (pkg) => [pkg.enc, ...(pkg.scoped || [])].filter(Boolean);
+const verOf = (pkg, enc) => (enc && enc.version) || pkg.version;
+const encFor = (pkg) => (KEY ? encsOf(pkg).find((e) => e.salt === KEY.salt) : null);
+async function savedKey(pkg) {
   try {
-    const s = JSON.parse(store.get('key') || 'null');
-    if (!s || s.salt !== enc.salt || s.iter !== enc.iter) return null;
-    return await crypto.subtle.importKey('raw', b64(s.k), 'AES-GCM', true, ['decrypt']);
+    const s = JSON.parse(store.get('key') || 'null'); if (!s) return null;
+    const enc = encsOf(pkg).find((e) => e.salt === s.salt && e.iter === s.iter); if (!enc) return null;
+    return { salt: s.salt, key: await crypto.subtle.importKey('raw', b64(s.k), 'AES-GCM', true, ['decrypt']) };
   } catch { return null; }
 }
 let KEY = null, PENDING_PKG = null;
 function start(data, version, keepState) {
   const scrollY = window.scrollY;
-  M = buildModel(data, version);
+  BASE = data;
+  M = buildModel(viewData(), version);
   if (!keepState) { if (!readHash()) S.tab = 'today'; }
   renderHeader(); syncInputs(); render();
   if (keepState) window.scrollTo(0, scrollY);
@@ -1301,8 +1306,9 @@ async function fetchPkg() {
 }
 async function openPkg(pkg, keepState) {
   if (pkg.data) { start(pkg.data, pkg.version, keepState); return true; }
-  if (!KEY) KEY = await savedKey(pkg.enc);
-  if (KEY) { try { start(await decryptPkg(pkg.enc, KEY), pkg.version, keepState); return true; } catch { KEY = null; } }
+  if (!KEY) KEY = await savedKey(pkg);
+  const enc = encFor(pkg);
+  if (enc) { try { start(await decryptPkg(enc, KEY.key), verOf(pkg, enc), keepState); return true; } catch { KEY = null; } }
   return false;
 }
 async function check(first) {
@@ -1310,9 +1316,9 @@ async function check(first) {
   try {
     const pkg = await fetchPkg();
     lastCheck = new Date();
-    if (!first && M && pkg.version === M.version) { updateMeta(); return; }
+    if (!first && M && verOf(pkg, encFor(pkg)) === M.version) { updateMeta(); return; }
     const ok = await openPkg(pkg, !first);
-    if (ok) { if (!first) toast('اتحدّث — فيه جديد'); $('#lock').hidden = !pkg.enc; }
+    if (ok) { if (!first) toast('اتحدّث — فيه جديد'); $('#lock').hidden = !encsOf(pkg).length; }
     else if (first || !M) showGate(pkg);
   } catch (err) {
     if (first) $('#boot').textContent = 'الصفحة ماحمّلتش — اتأكد من النت وجرّب تاني.';
@@ -1353,7 +1359,7 @@ else if (REMOTE) {
 } else $('#boot').innerHTML = 'القالب ده من غير داتا. افتح <code>سجل-الإنجازات.html</code> أو شغّل <code>node build.mjs</code>.';
 setInterval(() => {
   const t = toISO(new Date());
-  if (M && t !== TODAY) { start(M.DATA, M.version, true); } else updateMeta();
+  if (M && t !== TODAY) { start(BASE, M.version, true); } else updateMeta();
 }, 30000);
 })();
 </script>
