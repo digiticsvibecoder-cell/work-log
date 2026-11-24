@@ -85,6 +85,12 @@ mark { background: var(--mark); color: inherit; border-radius: 1px; }
 .search .field { inline-size: 100%; padding-inline-end: 2.5rem; }
 .search .clear { position: absolute; inset-inline-end: 0; inset-block-start: 0; inline-size: var(--tap); block-size: var(--tap); border: 0; background: none; color: var(--ink-3); display: none; }
 .search.has .clear { display: block; }
+/* الشركة: سويتش من تلاتة بيقص الصفحة كلها (بيظهر بس للي فتح بالباسورد الكامل) */
+.seg { display: inline-flex; flex: none; border: 1px solid var(--line-2); border-radius: var(--r); background: var(--surface); overflow: hidden; }
+.seg button { min-block-size: calc(var(--tap) - 2px); padding-inline: .95rem; border: 0; background: none; color: var(--ink-2); font-weight: 600; font-size: .9375rem; transition: background var(--t) var(--ease), color var(--t) var(--ease); }
+.seg button + button { border-inline-start: 1px solid var(--line); }
+.seg button:hover { background: var(--hover); color: var(--ink); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
 .dates { display: none; gap: .5rem; align-items: center; }
 .dates.on { display: inline-flex; }
 .dates .field { inline-size: 10.5rem; }
@@ -105,7 +111,8 @@ mark { background: var(--mark); color: inherit; border-radius: 1px; }
   .btn .lg { display: none; } .btn .sm { display: inline; }
   .filters { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .filters > label > .field { inline-size: 100%; }
-  .search, .dates, #proj-wrap { grid-column: 1 / -1; }
+  .search, .dates, #proj-wrap, .seg { grid-column: 1 / -1; }
+  .seg button { flex: 1; }
   .dates.on { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
   .dates .field { inline-size: 100%; }
   .actions { inline-size: 100%; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; }
@@ -314,6 +321,7 @@ footer p { margin: .15rem 0; }
 <div class="wrap">
   <div class="toolbar" id="toolbar" hidden>
     <div class="filters" id="filters">
+      <div class="seg" id="company" role="group" aria-label="الشركة" hidden></div>
       <label class="search" id="search-wrap">
         <span class="sr">دوّر</span>
         <input class="field" id="q" type="search" placeholder="دوّر…" autocomplete="off" enterkeyhint="search">
@@ -531,6 +539,142 @@ function blocks(lines, ctx) {
   return out.join('');
 }
 
+/* ================= company scope (scope.mjs, inlined by build.mjs) ================= */
+// Which company each piece of the work log belongs to: مجسّم, or ديجيتكس (everything else).
+// One source of truth for two users:
+//   - build.mjs encrypts one package per company, so a company password never decrypts the other's work;
+//   - the page (template.html) offers a company switch to whoever opened the full package.
+// build.mjs inlines this file into the page with `export` stripped — keep it plain, import-free browser JS.
+
+const COMPANIES = [
+  { id: 'mujassam', name: 'مجسّم', subtitle: 'Vibe Coder في مجسّم' },
+  { id: 'digitics', name: 'ديجيتكس', subtitle: '' },
+];
+const REPO_COMPANY = { mujassam: 'mujassam' }; // anything not listed is Digitics'
+
+// «مجسّم» with or without the shadda, not «مجسّمات» (3D models in general).
+const MUJASSAM_RE = /مجسّ?م(?![ء-ي])|mujassam/i;
+const STATUS_RE = /^[\s✅🧪⏳⏹️]+/u;
+
+/** «مجسّم: …» / «دولفين: …» — a short label before the first colon decides; otherwise any mention of مجسّم. */
+function companyOfText(text) {
+  const t = String(text).replace(STATUS_RE, '').replace(/\*\*/g, '');
+  const p = t.match(/^([^:\n]{1,32}):\s/);
+  if (p) return MUJASSAM_RE.test(p[1]) ? 'mujassam' : 'digitics';
+  return MUJASSAM_RE.test(t) ? 'mujassam' : 'digitics';
+}
+const titleOf = (h3) => h3.replace(/^###\s*/, '').replace(/^\d{4}-\d{2}-\d{2}(?:\s*[←→]\s*\d{4}-\d{2}-\d{2})?\s*[—–-]\s*/, '');
+
+function sectionKind(name) {
+  if (/ملخص/.test(name)) return 'index';
+  if (/شغّال عليه|شغال عليه/.test(name)) return 'wip';
+  if (/إزاي الملف|ازاي الملف/.test(name)) return 'how';
+  return 'project';
+}
+
+/** ACHIEVEMENTS.md cut down to one company. Mirrors parseAchievements() in the page. */
+function scopeAchievements(md, company) {
+  const lines = md.replace(/\r\n/g, '\n').split('\n');
+  const out = [];
+  let kind = 'pre', secCompany = null, sec = null; // sec = buffered project section: { head, intro, entries }
+  let entry = null; // { company, lines }
+  const flushEntry = () => {
+    if (!entry) return;
+    if (sec) sec.entries.push(entry); else if (entry.company === company) out.push(...entry.lines);
+    entry = null;
+  };
+  const flushSec = () => {
+    flushEntry();
+    if (!sec) return;
+    const kept = sec.entries.filter((e) => e.company === company);
+    if (kept.length) out.push(sec.head, ...(secCompany === company ? sec.intro : ['']), ...kept.flatMap((e) => e.lines));
+    sec = null;
+  };
+  for (const l of lines) {
+    if (l.startsWith('## ')) {
+      flushSec(); flushEntry();
+      const name = l.slice(3).trim();
+      kind = sectionKind(name);
+      if (kind === 'project') { secCompany = companyOfText(name.replace(/^\d+\)\s*/, '')); sec = { head: l, intro: [], entries: [] }; }
+      else if (kind === 'index' || kind === 'wip') out.push(l);
+      continue;
+    }
+    if (kind === 'pre') {
+      if (l.startsWith('# ') && company !== 'digitics') {
+        const sub = COMPANIES.find((c) => c.id === company)?.subtitle;
+        out.push(sub ? l.split(' — ')[0] + ' — ' + sub : l);
+      } else out.push(l);
+      continue;
+    }
+    if (kind === 'how') continue;
+    if (kind === 'index') {
+      if (!l.startsWith('|')) { if (!l.trim()) out.push(l); continue; }
+      const first = l.split('|')[1] || '';
+      if (/^\s*-/.test(first) || /^\s*المشروع/.test(first) || companyOfText(first) === company) out.push(l);
+      continue;
+    }
+    if (l.startsWith('### ')) {
+      flushEntry();
+      const own = companyOfText(titleOf(l));
+      // inside a project section the section decides, unless the entry names مجسّم itself («تجهيز اللاب لمجسّم»)
+      entry = { company: kind === 'project' && own !== 'mujassam' ? secCompany : own, lines: [l] };
+      continue;
+    }
+    if (entry) {
+      // an old-style wip bullet ends at the next top-level bullet
+      if (entry.bullet && l.startsWith('- ')) { flushEntry(); }
+      else { entry.lines.push(l); continue; }
+    }
+    if (kind === 'wip') {
+      if (l.startsWith('- ')) entry = { company: companyOfText(l.slice(2)), lines: [l], bullet: true };
+      else if (!l.trim()) out.push(l);
+      continue;
+    }
+    if (sec) sec.intro.push(l);
+  }
+  flushSec(); flushEntry();
+  return out.join('\n');
+}
+
+/** عملنا-اي-النهارده.md cut down to one company: every day header stays, items are kept by their label. */
+function scopeDaily(md, company) {
+  const out = []; let keep = true, inDays = false;
+  for (const l of md.replace(/\r\n/g, '\n').split('\n')) {
+    if (/^## \d{4}-\d{2}-\d{2}/.test(l)) { inDays = true; keep = true; out.push(l); continue; }
+    if (!inDays) { out.push(l); continue; }
+    if (l.startsWith('- ')) { keep = companyOfText(l.slice(2)) === company; if (keep) out.push(l); continue; }
+    if (!l.trim()) { out.push(l); continue; }
+    if (keep) out.push(l);
+  }
+  return out.join('\n');
+}
+
+/** The first `>` date is the page's start: a company's own start is its first day of work. */
+function firstDay(ach, daily) {
+  const ds = [...ach.matchAll(/^### (\d{4}-\d{2}-\d{2})/gm), ...daily.matchAll(/^## (\d{4}-\d{2}-\d{2})\n+- /gm)].map((m) => m[1]).sort();
+  return ds[0] || null;
+}
+
+/** The whole data object, cut down to one company. `data.scope` marks the result (and is what the page hides the switch on). */
+function scopeData(data, company) {
+  if (!company || company === 'all' || data.scope) return data;
+  const a = data.sources.achievements, d = data.sources.daily;
+  let ach = scopeAchievements(a.text, company);
+  const daily = scopeDaily(d.text, company);
+  if (company === 'mujassam') {
+    const start = firstDay(ach, daily);
+    if (start) ach = ach.replace(/^>.*\d{4}-\d{2}-\d{2}.*$/m, `> ملف بكل اللي اتعمل في مجسّم من أول يوم (${start}).`);
+  }
+  const repos = ((data.git && data.git.repos) || []).filter((r) => (REPO_COMPANY[r.key] || 'digitics') === company);
+  return { ...data, scope: company, sources: { achievements: { ...a, text: ach }, daily: { ...d, text: daily } }, git: { ...(data.git || {}), repos } };
+}
+
+const COMPANY_OPTS = [{ id: 'all', name: 'الكل' }, ...COMPANIES];
+const companyName = (id) => (COMPANIES.find((c) => c.id === id) || {}).name || '';
+let BASE = null; // الداتا زي ما اتفتحت — الموديل بيتبني من نسخة مقصوصة منها لما الشركة تتغيّر
+const viewData = () => (BASE.scope ? BASE : scopeData(BASE, S.company));
+const coNow = () => (BASE && BASE.scope) || (S.company !== 'all' ? S.company : ''); // الشركة اللي الصفحة مقصوصة عليها دلوقتي
+
 /* ================= model ================= */
 const WIP_SEC = { id: 'wip', name: 'شغّال عليه دلوقتي', intro: [], wip: true };
 function cleanProject(name) { return name.replace(/^\d+\)\s*/, '').split(' — ')[0].trim(); }
@@ -704,7 +848,8 @@ const TABS = [
   { id: 'done', label: 'الإنجازات' },
   { id: 'stats', label: 'الأرقام' },
 ];
-const S = { tab: 'today', day: null, period: 'all', from: '', to: '', status: 'all', project: 'all', q: '' };
+const S = { tab: 'today', day: null, period: 'all', from: '', to: '', status: 'all', project: 'all', q: '', company: 'all' };
+{ const c = store.get('company'); if (COMPANY_OPTS.some((o) => o.id === c)) S.company = c; }
 function readHash() {
   const h = decodeURIComponent(location.hash.replace(/^#\/?/, ''));
   const [tab, arg] = h.split('/');
